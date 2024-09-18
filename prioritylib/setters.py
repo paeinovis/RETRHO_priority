@@ -38,7 +38,26 @@ def change_dec(self):
         new_coords = SkyCoord(coord_str_1, coord_str_2, unit=(u.hour, u.deg), frame='icrs')
         self.tab3.coords = new_coords
         self.tab3.dec = new_dec
-        update = "Uupdated Dec to " + str(self.tab3.dec) + ".\nCoordinates are now " + self.tab3.coords.to_string(style="hmsdms", sep=":", precision=1) + "."
+        update = "Updated Dec to " + str(self.tab3.dec) + ".\nCoordinates are now " + self.tab3.coords.to_string(style="hmsdms", sep=":", precision=1) + "."
     except (ValueError):
         pass
     self.tab3.label_info.setText(update)
+
+def change_time(self):
+    update = "Time could NOT be updated.\nEnsure that the value entered matches a valid format \n(e.g., 2024-12-20 10:00:00)."
+    try:
+        new_time = self.tab3.time_input.text()
+        new_time = Time(new_time)
+        self.time_var = new_time
+        self.use_curr_time = False
+        update = "Updated time to " + str(self.time_var) + "."
+    except (ValueError):
+        pass
+    except (ErfaWarning):
+        update = "Time could NOT be updated; the date was too far in the future/past."
+    self.tab3.label_info.setText(update)
+
+def use_now_time(self):
+    self.use_curr_time = True
+    self.time_var = Time.now()    
+    self.tab3.label_info.setText("Program will now use current time.")

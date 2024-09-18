@@ -17,7 +17,9 @@ def get_info_of_obj(self, tab):
         return
     
     tab.result_table = result_table
-    now = Time.now()
+
+    if self.use_curr_time:
+        self.time_var = Time.now()                                # Update time If needed
 
     # SIMBAD shenanigans to get some relevant info and convert it to hmsdms bc SIMBAD doesn't do that natively anymore???
     info = [tab.result_table["main_id"][0], tab.coords.to_string('hmsdms'), tab.result_table["V"][0]]
@@ -34,12 +36,12 @@ def get_info_of_obj(self, tab):
         coords_dec = result_table["dec"]
 
     # Idk what to say abt this, sometimes the true/false comes like [True] and other times it comes like True. I don't get it .
-    up_now = str(RHO.target_is_up(now, tab.current_target))
+    up_now = str(RHO.target_is_up(self.time_var, tab.current_target))
     if "[" in up_now:
         up_now = up_now.split("[")[1]
         up_now = up_now.split("]")[0]
 
-    alt_az = tab.coords.transform_to(AltAz(obstime=now, location=RHO.location))
+    alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=RHO.location))
     str_alt = str(alt_az.alt)[1:-8] + "s"
     str_az = str(alt_az.az)[1:-8] + "s"
     
@@ -51,7 +53,7 @@ def get_info_of_obj(self, tab):
     str_info += "Coordinates: " + coords_ra + ", " + coords_dec + "\n"      
     str_info += "Magnitude V: " + str(round(float(info[2]), 5)) + "\n\n"
     try: 
-        rise_set = [helpers.eastern(RHO.target_rise_time(time=now, target=tab.current_target)), helpers.eastern(RHO.target_set_time(time=now, target=tab.current_target))]
+        rise_set = [helpers.eastern(RHO.target_rise_time(time=self.time_var, target=tab.current_target)), helpers.eastern(RHO.target_set_time(time=self.time_var, target=tab.current_target))]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
         str_info += "Sets: " + rise_set[1] + " EST" + "\n\n"
     except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):
@@ -65,6 +67,7 @@ def get_info_of_obj(self, tab):
 
 
 def print_csv_target(self):
+    helpers.update(self, self.tab2)
     update = "Could not complete action. Ensure a target is uploaded and selected."
     if self.tab2.current_target_name != "Default":
         name = self.tab2.current_target_name
@@ -77,30 +80,37 @@ def print_csv_target(self):
             self.tab2.label_info.setText(update)
             return
 
-        now = Time.now()
-        up_now = str(RHO.target_is_up(now, self.tab2.current_target))
+        if self.use_curr_time:
+            self.time_var = Time.now()                                # Update time If needed
+
+        up_now = str(RHO.target_is_up(self.time_var, self.tab2.current_target))
         if "[" in up_now:
             up_now = up_now.split("[")[1]
             up_now = up_now.split("]")[0]
 
         update = ""
+        
+        index = 0
         for column in COLUMNS:
-            update += column + ": " 
+            update += PRETTY_COLUMNS[index] + ": " 
             value = str(self.sheet[column][index_of_name])
             if value == "nan":
                 value = "Not given"
             update += value + "\n"
+            index += 1
 
-        alt_az = self.tab2.coords.transform_to(AltAz(obstime=now, location=RHO.location))
+        update += "\nUp now: " + up_now + "\n"
+
+        alt_az = self.tab2.coords.transform_to(AltAz(obstime=self.time_var, location=RHO.location))
         str_alt = str(alt_az.alt)[1:-8] + "s"
         str_az = str(alt_az.az)[1:-8] + "s"
 
         try: 
-            rise_set = [helpers.eastern(RHO.target_rise_time(time=now, target=self.tab2.current_target)), helpers.eastern(RHO.target_set_time(time=now, target=self.tab2.current_target))]
-            update += "Rises: " + rise_set[0] + " EST" + "\n"
+            rise_set = [helpers.eastern(RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target)), helpers.eastern(RHO.target_set_time(time=self.time_var, target=self.tab2.current_target))]
+            update += "\nRises: " + rise_set[0] + " EST" + "\n"
             update += "Sets: " + rise_set[1] + " EST" + "\n\n"
         except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):
-            update += "Rises: Does not rise\n"
+            update += "\nRises: Does not rise\n"
             update += "Sets: Does not set\n\n"
 
         update += "Altitude: " + str_alt + "\n"

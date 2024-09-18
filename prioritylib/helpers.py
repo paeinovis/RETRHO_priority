@@ -11,24 +11,35 @@ def determine_up(targets, obj_names, self, tab):
         tab.label_info.setText("Could not complete action.")
         return
     
-    now = Time.now()                                # Update time
+    if self.use_curr_time:
+        self.time_var = Time.now()                  # Update time If Needed
     new_list = []                                   # List of objects with up info
     index = 0
+
+    tab.up_target_names = []
 
     for obj in targets:
         obj_name = obj_names[index]
         if "(Up)" in obj_name:                        # Cuts off the (Up) part of the name if the star is indeed up
             obj_name = obj_name[0:-5]
-        if RHO.target_is_up(now, obj):
+        if RHO.target_is_up(self.time_var, obj):
             new_list.append(obj_name + " (Up)")       # So user can see if a given object is in the sky
+            tab.up_target_names.append(obj_name + " (Up)")
         else:
             new_list.append(obj_name)
         index += 1
     tab.label_info.setText("Target \"Up\" Status successfully updated.")
     tab.target_names = new_list
-    tab.current_target_name = tab.target_names[0]
+    
     tab.targets_dropdown.clear()       
-    tab.targets_dropdown.addItems(tab.target_names)
+
+    if not tab.only_show_up:
+        tab.targets_dropdown.addItems(tab.target_names)
+        tab.current_target_name = tab.target_names[0]
+    else:
+        tab.targets_dropdown.addItems(tab.up_target_names)
+        tab.current_target_name = tab.up_target_names[0]
+
     tab.targets_dropdown.setCurrentText(tab.current_target_name)
     update(self, tab)
 
@@ -49,9 +60,14 @@ def update(self, tab):
         tab.current_target = tab.targets[index_of_name]
         tab.coords = SkyCoord(ra=tab.current_target.ra, dec=tab.current_target.dec)
         tab.targets_dropdown.clear()       
-        tab.targets_dropdown.addItems(tab.target_names)
-        now = Time.now()                                # Update time
-        if RHO.target_is_up(now, tab.current_target):
+        if not tab.only_show_up:
+            tab.targets_dropdown.addItems(tab.target_names)
+        else:
+            tab.targets_dropdown.addItems(tab.up_target_names)
+        
+        if self.use_curr_time:
+            self.time_var = Time.now()                                # Update time If needed
+        if RHO.target_is_up(self.time_var, tab.current_target):
             name = name + " (Up)"      
         tab.targets_dropdown.setCurrentText(name)
         return True
@@ -63,14 +79,29 @@ def update(self, tab):
         if name not in tab.target_names:
             tab.current_target = FixedTarget(tab.coords, name=name)
             tab.targets.append(tab.current_target)
-            now = Time.now()                                # Update time
-            if RHO.target_is_up(now, tab.current_target):
-                name = name + " (Up)"      
+            if self.use_curr_time:
+                self.time_var = Time.now()                                # Update time If needed
+            if RHO.target_is_up(self.time_var, tab.current_target):
+                name = name + " (Up)"
+                self.tab1.up_target_names.append(name)      
             tab.target_names.insert(0, name)
     except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError, AttributeError):
         pass
 
     tab.targets_dropdown.clear()       
-    tab.targets_dropdown.addItems(tab.target_names)
+    if not tab.only_show_up:
+        tab.targets_dropdown.addItems(tab.target_names)
+    else:
+        tab.targets_dropdown.addItems(tab.up_target_names)
     tab.targets_dropdown.setCurrentText(name)
+
     return True
+
+def change_only_show_up(self, tab):
+    if not tab.only_show_up:
+        tab.only_show_up = True
+        tab.show_up_button.setText("Show All Targets")
+    else:
+        tab.only_show_up = False
+        tab.show_up_button.setText("Only Show Up Targets")
+    determine_up(tab.targets, tab.target_names, self, tab)

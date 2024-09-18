@@ -29,6 +29,8 @@ def init_window(self):
     init_tab_two(self)
     init_tab_three(self)
     self.fov = 15*u.arcmin
+    self.time_var = Time.now() 
+    self.use_curr_time = True
 
     info = "Name:\nIdentifier:\nUp now:\n\nCoordinates:\nMagnitude V:\n\nRises:\nSets:\n\nAltitude:\nAzimuth:"
     self.tab1.label_info.setText(info)   
@@ -41,6 +43,8 @@ def init_tab_one(self):
     self.tab1.current_target = FixedTarget(self.tab1.coords, name="Default Coordinates Plot")
     self.tab1.current_target_name = "Default"
 
+    self.tab1.only_show_up = False
+
     # List of possible alignment stars - can be changed if desired. 
     # Currently organized by brightest mag V to dimmest
     temp_target_names = ['Antares', 'Arcturus', 'Vega', 'Capella', 'Procyon',
@@ -48,20 +52,21 @@ def init_tab_one(self):
                         'Regulus', 'Dubhe', 'Mirfak', 'Polaris', 'Schedar',
                         'Kappa Oph', '* b03 Cyg' '* g Her', '* 49 Cas']
     self.tab1.target_names = []
+    self.tab1.up_target_names = [] 
     self.tab1.targets = []
 
     now = Time.now()
     for star in temp_target_names:
         try:
             curr_target = FixedTarget(coordinates.SkyCoord.from_name(star), name=star)
+            self.tab1.targets.append(curr_target)
         except(NameResolveError):
             continue
         if RHO.target_is_up(now, curr_target):
             self.tab1.target_names.append(star + " (Up)")       # So user can see if a given object is in the sky
-            self.tab1.targets.append(curr_target)
+            self.tab1.up_target_names.append(star)
         else:
             self.tab1.target_names.append(star)
-            self.tab1.targets.append(curr_target)
 
 
     # Widgets
@@ -82,8 +87,11 @@ def init_tab_one(self):
     self.tab1.update_button = QPushButton("Update Targets Up Status")
     self.tab1.update_button.clicked.connect(lambda: helpers.determine_up(self.tab1.targets, self.tab1.target_names, self, self.tab1))
 
+    self.tab1.show_up_button = QPushButton("Only Show Up Targets")
+    self.tab1.show_up_button.clicked.connect(lambda: helpers.change_only_show_up(self, self.tab1))
+
     self.tab1.plot_airmass_button = QPushButton("Plot airmass")
-    self.tab1.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self.tab1))
+    self.tab1.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self, self.tab1))
 
     # Entire tab
     self.tab1.layout = QVBoxLayout()
@@ -93,6 +101,7 @@ def init_tab_one(self):
     self.tab1.layout.addWidget(self.tab1.plot_button)
     self.tab1.layout.addWidget(self.tab1.plot_airmass_button)
     self.tab1.layout.addWidget(self.tab1.update_button)
+    self.tab1.layout.addWidget(self.tab1.show_up_button)
     self.tab1.setLayout(self.tab1.layout)
 
 def init_tab_two(self):
@@ -104,7 +113,10 @@ def init_tab_two(self):
     self.tab2.current_target_name = "Default"
     self.tab2.result_table = None   
 
+    self.tab2.only_show_up = False
+
     self.tab2.target_names = [] 
+    self.tab2.up_target_names = [] 
     self.tab2.targets = []
     self.tab2.targets_dropdown = QComboBox()
     self.tab2.targets_dropdown.addItems(self.tab2.target_names)
@@ -123,11 +135,13 @@ def init_tab_two(self):
     self.tab2.plot_button.clicked.connect(lambda: plots.plot_coords(self, self.tab2))
 
     self.tab2.plot_airmass_button = QPushButton("Plot airmass")
-    self.tab2.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self.tab2))
-
+    self.tab2.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self, self.tab2))
 
     self.tab2.update_button = QPushButton("Update Targets Up Status")
     self.tab2.update_button.clicked.connect(lambda: helpers.determine_up(self.tab2.targets, self.tab2.target_names, self, self.tab2))
+
+    self.tab2.show_up_button = QPushButton("Only Show Up Targets Toggle")
+    self.tab2.show_up_button.clicked.connect(lambda: helpers.change_only_show_up(self, self.tab2))
 
     self.tab2.file_upload_button = QPushButton("Upload file")
     self.tab2.file_upload_button.clicked.connect(lambda: open_file_dialog(self))
@@ -142,6 +156,7 @@ def init_tab_two(self):
     self.tab2.layout.addWidget(self.tab2.plot_button)
     self.tab2.layout.addWidget(self.tab2.plot_airmass_button)
     self.tab2.layout.addWidget(self.tab2.update_button)
+    self.tab2.layout.addWidget(self.tab2.show_up_button)
 
     self.tab2.setLayout(self.tab2.layout)
 
@@ -173,11 +188,18 @@ def init_tab_three(self):
     self.tab3.dec_input_button = QPushButton("Change Declination.")
     self.tab3.dec_input_button.clicked.connect(lambda: setters.change_dec(self))
 
+    self.tab3.time_input = QLineEdit()
+    self.tab3.time_input_button = QPushButton("Change time (YYYY-MM-DD HH:MM:SS).")
+    self.tab3.time_input_button.clicked.connect(lambda: setters.change_time(self))
+
+    self.tab3.now_button = QPushButton("Use current time.")
+    self.tab3.now_button.clicked.connect(lambda: setters.use_now_time(self))
+
     self.tab3.plot_button = QPushButton("Plot")
     self.tab3.plot_button.clicked.connect(lambda: plots.plot_coords(self, self.tab3))
 
     self.tab3.plot_airmass_button = QPushButton("Plot airmass")
-    self.tab3.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self.tab3))
+    self.tab3.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self, self.tab3))
 
     # Entire tab
     self.tab3.layout = QVBoxLayout()
@@ -187,6 +209,9 @@ def init_tab_three(self):
     self.tab3.layout.addWidget(self.tab3.ra_input_button)
     self.tab3.layout.addWidget(self.tab3.dec_input)
     self.tab3.layout.addWidget(self.tab3.dec_input_button)
+    self.tab3.layout.addWidget(self.tab3.time_input)
+    self.tab3.layout.addWidget(self.tab3.time_input_button)
+    self.tab3.layout.addWidget(self.tab3.now_button)
     self.tab3.layout.addWidget(self.tab3.plot_button)
     self.tab3.layout.addWidget(self.tab3.plot_airmass_button)
     self.tab3.layout.addWidget(self.tab3.label_info)

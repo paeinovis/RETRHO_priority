@@ -15,7 +15,6 @@ def plot_coords(self, tab):
         helpers.update(self, tab)
         title = "Finder image for " + tab.current_target_name + " (FOV = " + str(self.fov) + ")"
         title_2 = tab.current_target_name + " Plot"
-    now = Time.now()
     figure = plt.figure()
     canvas = FigureCanvas(figure)
     ax, hdu = plot_finder_image(tab.coords, fov_radius=self.fov);
@@ -37,7 +36,6 @@ def plot(self, tab):
         tab.label_info.setText("Object not found. Check spelling and try again.")
         return
     
-    now = Time.now()
     figure = plt.figure()
     canvas = FigureCanvas(figure)
     ax, hdu = plot_finder_image(tab.current_target, fov_radius=self.fov);
@@ -51,12 +49,13 @@ def plot(self, tab):
 
 
 # Plot airmass
-def airmass_plot(tab):        
-    now = Time.now()
+def airmass_plot(self, tab):        
+    if self.use_curr_time:
+        self.time_var = Time.now()                                # Update time If needed
     figure = plt.figure(figsize=(8, 6))
     ax = plot_airmass(tab.current_target, 
                         observer=RHO, 
-                        time=now.to_datetime(timezone=RHO.timezone), 
+                        time=self.time_var.to_datetime(timezone=RHO.timezone), 
                         use_local_tz=True,
                         brightness_shading=True)
     title = "Airmass plot for " + tab.current_target_name

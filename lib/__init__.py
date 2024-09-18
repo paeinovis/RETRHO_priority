@@ -13,11 +13,12 @@ from PyQt5.QtWidgets import QComboBox, QMainWindow, QApplication, QPushButton, Q
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 import sys
+import astropy.coordinates as coordinates
 
 # Warnings imports
 from astroquery.simbad.core import NoResultsWarning
 from astropy.coordinates.name_resolve import NameResolveError
-import astropy.coordinates as coordinates
+from erfa import ErfaWarning
 import warnings
 warnings.filterwarnings("ignore", message="Numerical value without unit or explicit format passed to TimeDelta, assuming days")
 warnings.filterwarnings("error")
