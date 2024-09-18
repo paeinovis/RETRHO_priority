@@ -55,9 +55,9 @@ def update(self, tab):
     if "(Up)" in name:              # Cuts off the (Up) part of the name if the star is indeed up, so SIMBAD can query
         name = name[0:-5]
     tab.current_target_name = name
+    tab.current_target = tab.targets[index_of_name]
 
     if tab is self.tab2:
-        tab.current_target = tab.targets[index_of_name]
         tab.coords = SkyCoord(ra=tab.current_target.ra, dec=tab.current_target.dec)
         tab.targets_dropdown.clear()       
         if not tab.only_show_up:
@@ -93,6 +93,9 @@ def update(self, tab):
         tab.targets_dropdown.addItems(tab.target_names)
     else:
         tab.targets_dropdown.addItems(tab.up_target_names)
+    
+    if RHO.target_is_up(self.time_var, tab.current_target):
+        name = tab.current_target_name + " (Up)"      
     tab.targets_dropdown.setCurrentText(name)
 
     return True
@@ -101,7 +104,9 @@ def change_only_show_up(self, tab):
     if not tab.only_show_up:
         tab.only_show_up = True
         tab.show_up_button.setText("Show All Targets")
+        tab.label_info.setText("Now showing only up targets.")
     else:
         tab.only_show_up = False
         tab.show_up_button.setText("Only Show Up Targets")
+        tab.label_info.setText("Now showing all targets.")
     determine_up(tab.targets, tab.target_names, self, tab)
