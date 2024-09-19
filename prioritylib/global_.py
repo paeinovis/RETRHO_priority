@@ -8,6 +8,7 @@ RHO = Observer(
     name='Rosemary Hill Observatory'
 )
 
+EXTRA_ROWS = 2
 
 # These must be manually updated if changes to the template are made !!!
 NAME = "Primary Identifier**"

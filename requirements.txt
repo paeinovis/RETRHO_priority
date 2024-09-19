@@ -1,0 +1,10 @@
+astroplan==0.10.1
+astropy==6.1.3
+astroquery==0.4.8.dev9481
+astroquery==0.4.8.dev9474
+matplotlib==3.9.2
+pandas==2.2.2
+pyerfa==2.0.1.4
+PyQt5==5.15.11
+PyQt5_sip==12.15.0
+pyvo==1.5.2

@@ -43,6 +43,7 @@ def change_dec(self):
         pass
     self.tab3.label_info.setText(update)
 
+# Change time to user input, resulting in a static datetime
 def change_time(self):
     update = "Time could NOT be updated.\nEnsure that the value entered matches a valid format \n(e.g., 2024-12-20 10:00:00)."
     try:
@@ -53,11 +54,19 @@ def change_time(self):
         update = "Updated time to " + str(self.time_var) + "."
     except (ValueError):
         pass
-    except (ErfaWarning):
+    except (ErfaWarning):           # Apparently there is time shenanigans about using certain dates. So.
         update = "Time could NOT be updated; the date was too far in the future/past."
     self.tab3.label_info.setText(update)
 
+# Reset bool to using (approx.) Now wherever applicable instead of a static datetime
 def use_now_time(self):
     self.use_curr_time = True
     self.time_var = Time.now()    
     self.tab3.label_info.setText("Program will now use current time.")
+
+def set_default(self, tab, msg):           # Failure condition, set to defaults
+    tab.label_info.setText(msg)
+    tab.coords = SkyCoord("00:00:00.00 00:00:00.00", unit=(u.hour, u.deg), frame='icrs')
+    tab.current_target = FixedTarget(tab.coords, name="Default Coordinates Plot")
+    tab.current_target_name = "Default"
+    tab.result_table = None   

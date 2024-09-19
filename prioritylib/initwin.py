@@ -93,7 +93,7 @@ def init_tab_one(self):
     self.tab1.plot_airmass_button = QPushButton("Plot airmass")
     self.tab1.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self, self.tab1))
 
-    # Entire tab
+    # Entire tab layout
     self.tab1.layout = QVBoxLayout()
     self.tab1.layout.addWidget(self.tab1.targets_dropdown)
     self.tab1.layout.addWidget(self.tab1.targets_dropdown_button)
@@ -146,7 +146,7 @@ def init_tab_two(self):
     self.tab2.file_upload_button = QPushButton("Upload file")
     self.tab2.file_upload_button.clicked.connect(lambda: open_file_dialog(self))
 
-    # Entire tab
+    # Entire tab layout
     self.tab2.layout = QVBoxLayout()
     self.tab2.layout.addWidget(self.tab2.file_upload_button)
     self.tab2.layout.addWidget(self.tab2.targets_dropdown)
@@ -173,7 +173,7 @@ def init_tab_three(self):
 
     # Widgets
     self.tab3.fov_input = QLineEdit()
-    self.tab3.fov_input_button = QPushButton("Change FOV in arcminutes.")
+    self.tab3.fov_input_button = QPushButton("Change FOV in arcminutes")
 
     self.tab3.label_info = QLabel()
     self.tab3.label_info.setGeometry(200, 200, 200, 30)
@@ -181,18 +181,18 @@ def init_tab_three(self):
     self.tab3.fov_input_button.clicked.connect(lambda: setters.change_fov(self))
 
     self.tab3.ra_input = QLineEdit()
-    self.tab3.ra_input_button = QPushButton("Change Right Ascension.")
+    self.tab3.ra_input_button = QPushButton("Change Right Ascension")
     self.tab3.ra_input_button.clicked.connect(lambda: setters.change_ra(self))
 
     self.tab3.dec_input = QLineEdit()
-    self.tab3.dec_input_button = QPushButton("Change Declination.")
+    self.tab3.dec_input_button = QPushButton("Change Declination")
     self.tab3.dec_input_button.clicked.connect(lambda: setters.change_dec(self))
 
     self.tab3.time_input = QLineEdit()
-    self.tab3.time_input_button = QPushButton("Change time (YYYY-MM-DD HH:MM:SS).")
+    self.tab3.time_input_button = QPushButton("Change time (YYYY-MM-DD HH:MM:SS)")
     self.tab3.time_input_button.clicked.connect(lambda: setters.change_time(self))
 
-    self.tab3.now_button = QPushButton("Use current time.")
+    self.tab3.now_button = QPushButton("Use current time")
     self.tab3.now_button.clicked.connect(lambda: setters.use_now_time(self))
 
     self.tab3.plot_button = QPushButton("Plot")
@@ -201,7 +201,7 @@ def init_tab_three(self):
     self.tab3.plot_airmass_button = QPushButton("Plot airmass")
     self.tab3.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self, self.tab3))
 
-    # Entire tab
+    # Entire tab layout
     self.tab3.layout = QVBoxLayout()
     self.tab3.layout.addWidget(self.tab3.fov_input)
     self.tab3.layout.addWidget(self.tab3.fov_input_button)
@@ -250,6 +250,5 @@ def open_file_dialog(self):                       # Function from https://python
         self.tab2.targets_dropdown.addItems(self.tab2.target_names)
     else:
         self.sheet = None
-        msg = "Error parsing file."
-        self.tab2.label_info.setText(msg)
+        setters.set_default(self, self.tab2, "Error parsing file.")
 
