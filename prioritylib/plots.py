@@ -52,10 +52,10 @@ def airmass_plot(self, tab):
         title = "Airmass plot from coordinates"
         title_2 = "Plot From Coordinates"
     elif not helpers.update(self, tab):          
-        setters.set_default(self, tab)
+        setters.set_default(self, tab, "Object not found. Check spelling or upload file and try again.")
         return  
     else:
-        title = "Airmass plot for " + tab.current_target_name + " (FOV = " + str(self.fov) + ")"
+        title = "Airmass plot for " + tab.current_target_name
         title_2 = tab.current_target_name + " Airmass Plot"
 
     if self.use_curr_time:
