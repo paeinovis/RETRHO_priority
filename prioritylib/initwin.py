@@ -21,7 +21,7 @@ def init_window(self):
     container.setLayout(self.layout)
 
     width = 450
-    height = 500
+    height = 600
     self.setMinimumSize(width, height) 
 
     # Init
@@ -32,7 +32,7 @@ def init_window(self):
     self.time_var = Time.now() 
     self.use_curr_time = True
 
-    info = "Name:\nIdentifier:\nUp now:\n\nCoordinates:\nMagnitude V:\n\nRises:\nSets:\n\nAltitude:\nAzimuth:"
+    info = "Set time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates:\nMagnitude V:\n\nRises:\nSets:\n\nAltitude:\nAzimuth:"
     self.tab1.label_info.setText(info)   
 
 def init_tab_one(self):

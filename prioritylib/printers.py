@@ -44,18 +44,24 @@ def get_info_of_obj(self, tab):
         up_now = up_now.split("]")[0]
 
     alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=RHO.location))
-    str_alt = str(alt_az.alt)[1:-8] + "s"
-    str_az = str(alt_az.az)[1:-8] + "s"
+    str_alt = str(alt_az.alt)[1:-8] 
+    if "s" not in str_alt:
+        str_alt += "s"
+    str_az = str(alt_az.az)[1:-8]
+    if "s" not in str_az:
+        str_az += "s"
     
     # Gather relevant info
     str_info = ""
+    str_info += "Set time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n\n"
     str_info += "Name: " + tab.current_target_name + "\n"
     str_info += "Identifier: " + info[0] + "\n"
     str_info += "Up now: " + up_now + "\n\n"
-    str_info += "Coordinates: " + coords_ra + ", " + coords_dec + "\n"      
+    str_info += "Coordinates RA: " + coords_ra + "\n"
+    str_info += "Coordinates DEC: " + coords_dec + "\n"      
     str_info += "Magnitude V: " + str(round(float(info[2]), 5)) + "\n\n"
     try: 
-        rise_set = [helpers.eastern(RHO.target_rise_time(time=self.time_var, target=tab.current_target)), helpers.eastern(RHO.target_set_time(time=self.time_var, target=tab.current_target))]
+        rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
         str_info += "Sets: " + rise_set[1] + " EST" + "\n\n"
     except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):
@@ -93,6 +99,7 @@ def print_csv_target(self):
             str_info += value + "\n"
             index += 1
 
+        str_info += "Set time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n\n"
         up_now = str(RHO.target_is_up(self.time_var, self.tab2.current_target))
         if "[" in up_now:
             up_now = up_now.split("[")[1]
@@ -104,7 +111,7 @@ def print_csv_target(self):
         str_az = str(alt_az.az)[1:-8] + "s"
 
         try: 
-            rise_set = [helpers.eastern(RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target)), helpers.eastern(RHO.target_set_time(time=self.time_var, target=self.tab2.current_target))]
+            rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=self.tab2.current_target), True)]
             str_info += "\nRises: " + rise_set[0] + " EST" + "\n"
             str_info += "Sets: " + rise_set[1] + " EST" + "\n\n"
         except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):

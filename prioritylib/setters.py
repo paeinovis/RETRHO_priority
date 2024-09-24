@@ -65,6 +65,8 @@ def use_now_time(self):
     self.tab3.label_info.setText("Program will now use current time.")
 
 def set_default(self, tab, msg):           # Failure condition, set to defaults
+    tab.label_info.setText("")
+    time.sleep(1)
     tab.label_info.setText(msg)
     tab.coords = SkyCoord("00:00:00.00 00:00:00.00", unit=(u.hour, u.deg), frame='icrs')
     tab.current_target = FixedTarget(tab.coords, name="Default Coordinates Plot")
