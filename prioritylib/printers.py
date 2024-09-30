@@ -53,20 +53,33 @@ def get_info_of_obj(self, tab):
     
     # Gather relevant info
     str_info = ""
-    str_info += "Set time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n\n"
+    str_info += "Program time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n\n"
     str_info += "Name: " + tab.current_target_name + "\n"
     str_info += "Identifier: " + info[0] + "\n"
     str_info += "Up now: " + up_now + "\n\n"
     str_info += "Coordinates RA: " + coords_ra + "\n"
     str_info += "Coordinates DEC: " + coords_dec + "\n"      
-    str_info += "Magnitude V: " + str(round(float(info[2]), 5)) + "\n\n"
+    try:
+        str_info += "Magnitude V: " + str(round(float(info[2]), 5)) + "\n\n"
+    except (UserWarning):
+        str_info += "Magnitude V: Not available\n\n"
     try: 
         rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
-        str_info += "Sets: " + rise_set[1] + " EST" + "\n\n"
+        str_info += "Sets: " + rise_set[1] + " EST" + "\n"
+        if up_now == "True":
+            diff_rise = abs(self.time_var - RHO.target_rise_time(time=self.time_var, target=tab.current_target))
+            diff_set = abs(self.time_var - RHO.target_set_time(time=self.time_var, target=tab.current_target))
+            if diff_rise > diff_set:
+                str_info += "Currently setting\n\n" 
+            else:
+                str_info += "Currently rising\n\n"
+        else:
+            str_info += "Currently below horizon\n\n"
     except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):
         str_info += "Rises: Does not rise\n"
-        str_info += "Sets: Does not set\n\n"
+        str_info += "Sets: Does not set\n"
+        str_info += "Circumpolar\n\n"
     str_info += "Altitude: " + str_alt + "\n"
     str_info += "Azimuth: " + str_az
     
@@ -92,34 +105,51 @@ def print_csv_target(self):
         
         index = 0                                       # Grab Relevant CSV columns and values
         for column in COLUMNS: 
-            str_info += PRETTY_COLUMNS[index] + ": "      # Unforunately, the Names of the columns are not easy to read. So PRETTY_COLUMNS are the stringified versions
+            # This is here for aesthetic purposes in print - makes more sense to have the rise/set time, up status, etc Before observing info
+            # Makes sense chronologically for the code Below 
+            if PRETTY_COLUMNS[index] == "\nB Filter":
+                str_info += "\nProgram time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n"
+                up_now = str(RHO.target_is_up(self.time_var, self.tab2.current_target))
+                if "[" in up_now:
+                    up_now = up_now.split("[")[1]
+                    up_now = up_now.split("]")[0]
+                str_info += "Up now: " + up_now + "\n"
+
+                alt_az = self.tab2.coords.transform_to(AltAz(obstime=self.time_var, location=RHO.location))
+                str_alt = str(alt_az.alt)[0:-7] 
+                if "s" not in str_alt:
+                    str_alt += "s"
+                str_az = str(alt_az.az)[0:-7]
+                if "s" not in str_az:
+                    str_az += "s"
+
+                try: 
+                    rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=self.tab2.current_target), True)]
+                    str_info += "\nRises: " + rise_set[0] + " EST" + "\n"
+                    str_info += "Sets: " + rise_set[1] + " EST" + "\n"
+                    if up_now == "True":
+                        diff_rise = abs(self.time_var - RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target))
+                        diff_set = abs(self.time_var - RHO.target_set_time(time=self.time_var, target=self.tab2.current_target))
+                        if diff_rise > diff_set:
+                            str_info += "Currently setting\n\n" 
+                        else:
+                            str_info += "Currently rising\n\n"
+                    else:
+                        str_info += "Currently below horizon\n\n"
+                except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):
+                    str_info += "\nRises: Does not rise\n"
+                    str_info += "Sets: Does not set\n"
+                    str_info += "Circumpolar\n\n"
+                str_info += "Altitude: " + str_alt + "\n"
+                str_info += "Azimuth: " + str_az + "\n"
+            
+            # Prints info from CSV per column 
+            str_info += PRETTY_COLUMNS[index] + ": "      # Unfortunately, the Names of the columns are not easy to read. So PRETTY_COLUMNS are the stringified versions
             value = str(self.sheet[column][index_of_name])
             if value == "nan":
                 value = "Not given"
             str_info += value + "\n"
             index += 1
-
-        str_info += "Set time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n\n"
-        up_now = str(RHO.target_is_up(self.time_var, self.tab2.current_target))
-        if "[" in up_now:
-            up_now = up_now.split("[")[1]
-            up_now = up_now.split("]")[0]
-        str_info += "\nUp now: " + up_now + "\n"
-
-        alt_az = self.tab2.coords.transform_to(AltAz(obstime=self.time_var, location=RHO.location))
-        str_alt = str(alt_az.alt)[1:-8] + "s"
-        str_az = str(alt_az.az)[1:-8] + "s"
-
-        try: 
-            rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=self.tab2.current_target), True)]
-            str_info += "\nRises: " + rise_set[0] + " EST" + "\n"
-            str_info += "Sets: " + rise_set[1] + " EST" + "\n\n"
-        except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):
-            str_info += "\nRises: Does not rise\n"
-            str_info += "Sets: Does not set\n\n"
-
-        str_info += "Altitude: " + str_alt + "\n"
-        str_info += "Azimuth: " + str_az
 
     self.tab2.label_info.setText(str_info)
 

@@ -1,6 +1,47 @@
 from lib import *
 from prioritylib import *
+import prioritylib.sorters as sorters
 
+# Creates main window with all tabs
+class MainWindow(QMainWindow):
+    # Init main window
+    def __init__(self):
+        super().__init__()
+        init_window(self)
+    
+    # Init secondary window(s) FIXME: presently not used - if this stays this way, delete
+    def new_window(self):
+        if self.w is None:
+            self.w = PopupWindow()
+        self.w.show()
+
+# Creates secondary window(s) w/ label FIXME: presently not used - if this stays this way, delete
+class PopupWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout()
+        self.label = QLabel()
+        layout.addWidget(self.label)
+        self.setLayout(layout)
+
+# class for scrollable label        (from Geeks for Geeks)
+class ScrollLabel(QScrollArea):
+    # constructor
+    def __init__(self, *args, **kwargs):
+        QScrollArea.__init__(self, *args, **kwargs)
+        self.setWidgetResizable(True)
+        content = QWidget(self)
+        self.setWidget(content)
+        layout = QVBoxLayout(content)
+        self.label = QLabel(content)
+        self.label.setWordWrap(True)
+        layout.addWidget(self.label)
+ 
+    def setText(self, text):
+        self.label.setText(text)
+
+
+# First init of main window - only called once
 def init_window(self):
     self.setWindowTitle("Planning")
 
@@ -19,10 +60,11 @@ def init_window(self):
     self.layout = QVBoxLayout()
     self.layout.addWidget(self.tabs)
     container.setLayout(self.layout)
+    self.w = None
 
     width = 450
-    height = 600
-    self.setMinimumSize(width, height) 
+    height = 950
+    self.resize(width, height) 
 
     # Init
     init_tab_one(self)
@@ -32,7 +74,7 @@ def init_window(self):
     self.time_var = Time.now() 
     self.use_curr_time = True
 
-    info = "Set time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates:\nMagnitude V:\n\nRises:\nSets:\n\nAltitude:\nAzimuth:"
+    info = "Program time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates RA:\nCoordinates DEC:\nMagnitude V:\n\nRises:\nSets:\n\nAltitude:\nAzimuth:"
     self.tab1.label_info.setText(info)   
 
 def init_tab_one(self):
@@ -51,23 +93,8 @@ def init_tab_one(self):
                         'Altair', 'Aldebaran', 'Spica', 'Fomalhaut', 'Deneb', 
                         'Regulus', 'Dubhe', 'Mirfak', 'Polaris', 'Schedar',
                         'Kappa Oph', '* b03 Cyg' '* g Her', '* 49 Cas']
-    self.tab1.target_names = []
-    self.tab1.up_target_names = [] 
-    self.tab1.targets = []
 
-    now = Time.now()
-    for star in temp_target_names:
-        try:
-            curr_target = FixedTarget(coordinates.SkyCoord.from_name(star), name=star)
-            self.tab1.targets.append(curr_target)
-        except(NameResolveError):
-            continue
-        if RHO.target_is_up(now, curr_target):
-            self.tab1.target_names.append(star + " (Up)")       # So user can see if a given object is in the sky
-            self.tab1.up_target_names.append(star)
-        else:
-            self.tab1.target_names.append(star)
-
+    init_tab1_target_names(self, temp_target_names)
 
     # Widgets
     self.tab1.targets_dropdown = QComboBox()
@@ -75,11 +102,17 @@ def init_tab_one(self):
     self.tab1.targets_dropdown.setEditable(True)
     self.tab1.targets_dropdown.setInsertPolicy(QComboBox.InsertAtTop)
 
+    self.tab1.sort_dropdown = QComboBox()
+    self.tab1.sort_dropdown.addItems(SORT_NAMES_1)
+
     self.tab1.label_info = QLabel()
     self.tab1.label_info.setGeometry(200, 200, 200, 30)
 
     self.tab1.targets_dropdown_button = QPushButton("Go")
     self.tab1.targets_dropdown_button.clicked.connect(lambda: printers.get_info_of_obj(self, self.tab1))
+
+    self.tab1.sort_dropdown_button = QPushButton("Sort")
+    self.tab1.sort_dropdown_button.clicked.connect(lambda: sorters.sort_targets_tab1(self))
 
     self.tab1.plot_button = QPushButton("Plot")
     self.tab1.plot_button.clicked.connect(lambda: plots.plot(self, self.tab1))
@@ -97,6 +130,8 @@ def init_tab_one(self):
     self.tab1.layout = QVBoxLayout()
     self.tab1.layout.addWidget(self.tab1.targets_dropdown)
     self.tab1.layout.addWidget(self.tab1.targets_dropdown_button)
+    self.tab1.layout.addWidget(self.tab1.sort_dropdown)
+    self.tab1.layout.addWidget(self.tab1.sort_dropdown_button)
     self.tab1.layout.addWidget(self.tab1.label_info)
     self.tab1.layout.addWidget(self.tab1.plot_button)
     self.tab1.layout.addWidget(self.tab1.plot_airmass_button)
@@ -122,7 +157,7 @@ def init_tab_two(self):
     self.tab2.targets_dropdown.addItems(self.tab2.target_names)
 
     # Widgets
-    self.tab2.label_info = QLabel()
+    self.tab2.label_info = ScrollLabel(self)
     self.tab2.label_info.setGeometry(200, 200, 200, 30)
 
     self.tab2.targets_dropdown_button = QPushButton("Go")
@@ -130,6 +165,12 @@ def init_tab_two(self):
 
     self.tab2.csv_info_button = QPushButton("Print Submitted Target Info")
     self.tab2.csv_info_button.clicked.connect(lambda: printers.print_csv_target(self))
+
+    self.tab2.sort_dropdown = QComboBox()
+    self.tab2.sort_dropdown.addItems(SORT_NAMES_2)
+
+    self.tab2.sort_dropdown_button = QPushButton("Sort")
+    self.tab2.sort_dropdown_button.clicked.connect(lambda: sorters.sort_targets_tab2(self))
 
     self.tab2.plot_button = QPushButton("Plot")
     self.tab2.plot_button.clicked.connect(lambda: plots.plot_coords(self, self.tab2))
@@ -152,6 +193,8 @@ def init_tab_two(self):
     self.tab2.layout.addWidget(self.tab2.targets_dropdown)
     self.tab2.layout.addWidget(self.tab2.targets_dropdown_button)
     self.tab2.layout.addWidget(self.tab2.csv_info_button)
+    self.tab2.layout.addWidget(self.tab2.sort_dropdown)
+    self.tab2.layout.addWidget(self.tab2.sort_dropdown_button)
     self.tab2.layout.addWidget(self.tab2.label_info)
     self.tab2.layout.addWidget(self.tab2.plot_button)
     self.tab2.layout.addWidget(self.tab2.plot_airmass_button)
@@ -218,37 +261,78 @@ def init_tab_three(self):
 
     self.tab3.setLayout(self.tab3.layout)
 
+
 # Open csv file 
 def open_file_dialog(self):                       # Function from https://pythonspot.com/pyqt5-file-dialog/
     options = QFileDialog.Options()
     options |= QFileDialog.DontUseNativeDialog
     file_name, _ = QFileDialog.getOpenFileName(self,"Choose target list file", "","CSV Files (*.csv)", options=options)
     if file_name:
-        self.sheet = pandas.read_csv(file_name)
-        self.sheet = self.sheet[self.sheet[RA].str.contains("nan") == False]           # Gets rid of blank rows
-        self.tab2.targets = []
-        self.tab2.target_names = []
-        msg = "Successfully parsed file."
-        for i in range(2, len(self.sheet)):
-            try: 
-                name = self.sheet[NAME][i]
-                curr_target = FixedTarget(coordinates.SkyCoord.from_name(name), name=name)
-                self.tab2.targets.append(curr_target)
-                self.tab2.target_names.append(name)
-            except (NoResultsWarning, ValueError, TypeError):
-                msg = "Error parsing file. Please check template of submitted sheet."
-            except (NameResolveError):
-                name = self.sheet[NAME][i] 
-                curr_coords = self.sheet[RA][i] + " " + self.sheet[DEC][i]
-                curr_coords = SkyCoord(curr_coords, unit=(u.hour, u.deg), frame='icrs')
-                curr_target = FixedTarget(curr_coords, name=name)
-                self.tab2.targets.append(curr_target)
-                self.tab2.target_names.append(name)
-        helpers.determine_up(self.tab2.targets, self.tab2.target_names, self, self.tab2)
-        self.tab2.label_info.setText(msg)
-        self.tab2.targets_dropdown.clear()       
-        self.tab2.targets_dropdown.addItems(self.tab2.target_names)
+        try: 
+            self.sheet = pandas.read_csv(file_name)
+            self.sheet = self.sheet.iloc[1:]                                               # Gets rid of format instructional row
+            self.sheet = self.sheet[self.sheet[RA].str.contains("nan") == False]           # Gets rid of blank rows
+            self.tab2.targets = []
+            self.tab2.target_names = []
+            msg = "Successfully parsed file."
+        except (KeyError):
+            msg = "Error parsing file. Please check template of submitted sheet."
+            setters.set_default(self, self.tab2, msg)
+            return
+        init_tab2_target_names(self, 2)
     else:
         self.sheet = None
         setters.set_default(self, self.tab2, "Error parsing file.")
 
+
+def init_tab1_target_names(self, temp_target_names):
+    self.tab1.target_names = []
+    self.tab1.up_target_names = [] 
+    self.tab1.targets = []
+    self.tab1.mags = []
+
+    now = Time.now()
+    for star in temp_target_names:
+        try:
+            if "(Up)" in star:              # Cuts off the (Up) part of the name if the star is indeed up, so SIMBAD can query
+                star = star[0:-5]
+            curr_target = FixedTarget(coordinates.SkyCoord.from_name(star), name=star)
+            self.tab1.targets.append(curr_target)
+            self.tab1.mags.append(Simbad.query_object(star)[["V"][0]])
+        except(NameResolveError):
+            continue
+        if RHO.target_is_up(now, curr_target):
+            self.tab1.target_names.append(star + " (Up)")       # So user can see if a given object is in the sky
+            self.tab1.up_target_names.append(star)
+        else:
+            self.tab1.target_names.append(star)
+
+
+def init_tab2_target_names(self, start_index):
+    self.tab2.target_names = [] 
+    self.tab2.up_target_names = [] 
+    self.tab2.targets = []
+
+    for i in range(start_index, len(self.sheet) + 1):
+        try: 
+            name = self.sheet[NAME][i]
+            curr_target = FixedTarget(coordinates.SkyCoord.from_name(name), name=name)
+            self.tab2.targets.append(curr_target)
+            self.tab2.target_names.append(name)
+            msg = "Successfully parsed file."
+        except (KeyError, ValueError, TypeError):
+            msg = "Error parsing file. Please check template of submitted sheet."
+            setters.set_default(self, self.tab2, msg)
+            return False
+        except (NameResolveError, NoResultsWarning):
+            name = self.sheet[NAME][i]
+            curr_coords = self.sheet[RA][i] + " " + self.sheet[DEC][i]
+            curr_coords = SkyCoord(curr_coords, unit=(u.hour, u.deg), frame='icrs')
+            curr_target = FixedTarget(curr_coords, name=name)
+            self.tab2.targets.append(curr_target)
+            self.tab2.target_names.append(name)
+    helpers.determine_up(self.tab2.targets, self.tab2.target_names, self, self.tab2)
+    self.tab2.label_info.setText(msg)
+    self.tab2.targets_dropdown.clear()
+    self.tab2.targets_dropdown.addItems(self.tab2.target_names)
+    return True

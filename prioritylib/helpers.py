@@ -66,7 +66,7 @@ def update(self, tab):
     tab.current_target_name = name
 
     if tab is self.tab2:                                   # Change current values for tab2 without doing tab1 things  
-        tab.coords = SkyCoord(ra=tab.current_target.ra, dec=tab.current_target.dec)
+        tab.coords = tab.current_target.coord
         tab.targets_dropdown.clear()       
         if not tab.only_show_up:
             tab.targets_dropdown.addItems(tab.target_names)
@@ -108,7 +108,6 @@ def update(self, tab):
     else:
         tab.targets_dropdown.setCurrentText(name)
         tab.target_names[index_of_name] = name
-
     return True
 
 # Toggle for whether or not unrisen objects appear
@@ -124,5 +123,3 @@ def change_only_show_up(self, tab):
         set_label = "Now showing all targets."
     determine_up(tab.targets, tab.target_names, self, tab)
     tab.label_info.setText(set_label)
-
-

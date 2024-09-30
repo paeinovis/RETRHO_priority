@@ -4,3 +4,4 @@ import prioritylib.printers as printers
 import prioritylib.setters as setters
 from prioritylib.global_ import *
 import prioritylib.initwin as initwin
+import prioritylib.sorters as sorters
