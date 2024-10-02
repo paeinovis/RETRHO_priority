@@ -169,7 +169,7 @@ def init_tab_two(self):
     self.tab2.targets_dropdown_button = QPushButton("Go")
     self.tab2.targets_dropdown_button.clicked.connect(lambda: printers.get_info_of_obj(self, self.tab2))
 
-    self.tab2.csv_info_button = QPushButton("Print Submitted Target Info")
+    self.tab2.csv_info_button = QPushButton("Display Submitted Target Info")
     self.tab2.csv_info_button.clicked.connect(lambda: printers.print_csv_target(self))
 
     self.tab2.sort_dropdown = QComboBox()
