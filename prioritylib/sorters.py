@@ -30,7 +30,6 @@ def sort_targets_tab1(self):
     self.tab1.label_info.setText("Sort complete.")
 
 # Sort sheet values with a switch case depending on what is selected
-# FIXME: should eventually add ways to do current-date stuff and Obs Window
 def sort_targets_tab2(self):
     sort = self.tab2.sort_dropdown.currentText()
     if sort == '':                    # Don't do anything if there's no target chosen or list uploaded

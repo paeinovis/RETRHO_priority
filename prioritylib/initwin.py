@@ -291,11 +291,13 @@ def open_file_dialog(self):                       # Function from https://python
         setters.set_default(self, self.tab2, "Error parsing file.")
 
 
+# (Re)init tab1 values
 def init_tab1_target_names(self, temp_target_names):
-    self.tab1.target_names[:] = []
-    self.tab1.up_target_names[:] = [] 
-    self.tab1.targets[:] = []
-    self.tab1.mags[:] = []
+    del self.tab1.target_names, self.tab1.up_target_names, self.tab1.targets, self.tab1.mags
+    self.tab1.target_names = []
+    self.tab1.up_target_names = [] 
+    self.tab1.targets = []
+    self.tab1.mags = []
 
     now = Time.now()
     for star in temp_target_names:
@@ -318,10 +320,12 @@ def init_tab1_target_names(self, temp_target_names):
     helpers.determine_up(self.tab1.targets, self.tab1.target_names, self, self.tab1)
 
 
+# (Re)init tab2 values
 def init_tab2_target_names(self, start_index, end_index):
-    self.tab2.target_names[:] = [] 
-    self.tab2.up_target_names[:] = [] 
-    self.tab2.targets[:] = []
+    if self.tab2.target_names:
+        self.tab2.target_names[:] = [] 
+        self.tab2.up_target_names[:] = [] 
+        self.tab2.targets[:] = []
 
     for i in range(start_index, end_index):
         try: 
