@@ -8,7 +8,6 @@ RHO = Observer(
     name='Rosemary Hill Observatory'
 )
 
-EXTRA_ROWS = 2
 
 # These must be manually updated if changes to the template are made !!!
 NAME = "Primary Identifier**"
@@ -45,4 +44,4 @@ PRETTY_COLUMNS = ["Name", "Secondary Name", "\nRA", "Dec", "\nV Magnitude", "B M
                   "\nBaseline", "\nObservation procedures", "\nScientific Justification", "\nNotes"]
 
 SORT_NAMES_1 = ["Brightest", "Dimmest"]
-SORT_NAMES_2 = ["Brightest", "Dimmest", "Priority"]
+SORT_NAMES_2 = ["Brightest", "Dimmest", "Highest Priority"]

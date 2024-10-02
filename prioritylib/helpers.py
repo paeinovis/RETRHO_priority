@@ -44,7 +44,8 @@ def determine_up(targets, obj_names, self, tab):
         tab.current_target_name = tab.up_target_names[0]
 
     tab.targets_dropdown.setCurrentText(tab.current_target_name)        # Re-set current dropdown text
-    update(self, tab)
+    if update(self, tab):
+        return True
 
 # Kind of a vague but important function for checking, not so necessarily an update now
 def update(self, tab):

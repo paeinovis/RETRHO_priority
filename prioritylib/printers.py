@@ -94,9 +94,9 @@ def print_csv_target(self):
         name = self.tab2.current_target_name
         name_up = self.tab2.current_target_name + " (Up)"
         if name in self.tab2.target_names:
-            index_of_name = self.tab2.target_names.index(name) + EXTRA_ROWS      # Ignore the first few rows
+            index_of_name = self.tab2.target_names.index(name) 
         elif name_up in self.tab2.target_names:
-            index_of_name = self.tab2.target_names.index(name_up) + EXTRA_ROWS
+            index_of_name = self.tab2.target_names.index(name_up) 
         else:
             setters.set_default(self, self.tab2, str_info)
             return

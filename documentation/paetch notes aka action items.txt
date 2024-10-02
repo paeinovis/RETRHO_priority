@@ -156,6 +156,10 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 ->go vs print submitted info bug (probs a Set Target issue)
 ->tab1 won't update current text when self-typed target in ?
 
+10/2/2024
+-fixed tab2 list sorting function
+-fixed go vs print submitted info bug after much toiling
+
 ----------------------------------
 
 priority/planning todo:

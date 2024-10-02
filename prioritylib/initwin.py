@@ -285,7 +285,7 @@ def open_file_dialog(self):                       # Function from https://python
             msg = "Error parsing file. Please check template of submitted sheet."
             setters.set_default(self, self.tab2, msg)
             return
-        init_tab2_target_names(self, 1)
+        init_tab2_target_names(self, 1, len(self.sheet) + 1)
     else:
         self.sheet = None
         setters.set_default(self, self.tab2, "Error parsing file.")
@@ -318,14 +318,14 @@ def init_tab1_target_names(self, temp_target_names):
     helpers.determine_up(self.tab1.targets, self.tab1.target_names, self, self.tab1)
 
 
-def init_tab2_target_names(self, start_index):
+def init_tab2_target_names(self, start_index, end_index):
     self.tab2.target_names[:] = [] 
     self.tab2.up_target_names[:] = [] 
     self.tab2.targets[:] = []
 
-    for i in range(start_index, len(self.sheet) + 1):
+    for i in range(start_index, end_index):
         try: 
-            name = self.sheet[NAME][i]
+            name = self.sheet.at[i, NAME]
             curr_target = FixedTarget(coordinates.SkyCoord.from_name(name), name=name)
             self.tab2.targets.append(curr_target)
             self.tab2.target_names.append(name)
@@ -336,7 +336,7 @@ def init_tab2_target_names(self, start_index):
             return False
         except (NameResolveError, NoResultsWarning):
             name = self.sheet[NAME][i]
-            curr_coords = self.sheet[RA][i] + " " + self.sheet[DEC][i]
+            curr_coords = self.sheet[RA][i] + " " + self.sheet.at[i, DEC]
             curr_coords = SkyCoord(curr_coords, unit=(u.hour, u.deg), frame='icrs')
             curr_target = FixedTarget(curr_coords, name=name)
             self.tab2.targets.append(curr_target)

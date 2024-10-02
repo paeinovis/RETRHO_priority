@@ -33,22 +33,17 @@ def sort_targets_tab1(self):
 # FIXME: should eventually add ways to do current-date stuff and Obs Window
 def sort_targets_tab2(self):
     sort = self.tab2.sort_dropdown.currentText()
-    print(self.sheet)
     if sort == '':                    # Don't do anything if there's no target chosen or list uploaded
         setters.set_default(self, self.tab2, "Could not complete action. Ensure a sort method is chosen.")
         return
-    print(sort)
     match sort:
         case "Brightest":
-            self.sheet = self.sheet.sort_values([MAG_V])
-            print(self.sheet)
+            self.sheet.sort_values([MAG_V], inplace=True, ignore_index=True)
         case "Dimmest":
-            self.sheet = self.sheet.sort_values(MAG_V, ascending=False)
-            print(self.sheet)
+            self.sheet.sort_values(MAG_V, ascending=False, inplace=True, ignore_index=True)
         case "Highest Priority":
-            self.sheet = self.sheet.sort_values(PRIORITY, ascending=False)
-            print(self.sheet)
+            self.sheet.sort_values(PRIORITY, inplace=True, ignore_index=True)
         # I'd add Lowest priority, but I don't see why that would be useful?
     # Update target list etc etc
-    if initwin.init_tab2_target_names(self, 2):
+    if initwin.init_tab2_target_names(self, 0, len(self.sheet)):
         self.tab2.label_info.setText("Sort complete.")
