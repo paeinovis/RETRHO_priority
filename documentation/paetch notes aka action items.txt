@@ -1,0 +1,176 @@
+paetch notes (7/3-7/4/2024):
+
+-made sheet for RETRHO roster or RETRHOster, including list of observers, status (junior/senior), contact info in the form of emails, and checkmarks for which WGs they are in
+-added contact page which will email the uf.retrho gmail when responses are submitted
+-made it so application form also emails uf.retrho
+-limited signup to 5 people per obs night (may be capped to 4 in future)
+-updated form descriptions and auto emails of signup/followup for clarity in instructions
+-added calendar functionality to signup process (https://calendar.google.com/calendar/u/0?cid=YzE4MGI4ZmMxNjkyM2FmMDczMmIyZDRhNDZhODc4YTkwNjZjNzhiY2Y2YjMwMjA2NmFjZDYzNmRlZjJkZTk3MkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t) 
+-added sunset/sunrise functionality to google calendar based on date, *approximating* time of dusk and dawn for each month. so whenever you sign up to observe on a given night, the google calendar event will use those start/end times as approx. the amount of time to block off. this uses suggested sunrise/sunset dates (based on night and twilight values from timeanddate.com)
+->had to account for daylight savings time my beloathed
+
+paetch notes (7/5/2024):
+-manual editing, formatting, comments - some relating to recent changes, others to clarity/wording
+-moved folder containing obs logs to Pre/Post Observing/Observing Followup/Observing log uploads
+-added obs logs (Pre/Post Observing/Observing Followup/Observing log uploads)
+and template to drive (Pre/Post Observing/Observing Followup/YYYYMMDD_...)
+-added link to obs log template to followup form 
+-de-you-ified manual
+-de-contraction-ed manual
+-added links to figures via bookmarks
+
+paetch notes (7/9/2024 & 7/10/2024):
+-light manual edits
+-added CV upload to application form, and moved related files to folder of RETRHO Onboarding (CVs upload to RETRHO Application folder, Interested in RHO? file, RETRHO Application form itself)
+-fixed some roles in the discord and sheet but waiting on confirmation of some users about their current WGs
+-updated some target submission things based on Jamie n Triana feedback 
+->HH:MM:SS or HH MM SS validation via regex
+-> both ra and dec via regex: ([0-1][0-9]|2[0-3])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\s(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]$|(([0-1][0-9]|2[0-3])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\s(\+|\-)?90(:|\s)00(:|\s)00$)$
+->ra: ^([0-1][0-9]|2[0-3])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]$
+->dec: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]$|^(\+|\-)?90(:|\s)00(:|\s)00$
+
+7/11/2024
+-updated ra and dec to have optional decimals (up to 4)
+both ra and dec updated w/ decimal: ([0-1][0-9]|2[0-3])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?\d{0,4}?\s(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?\d{0,4}?$|(([0-1][0-9]|2[0-3])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\s(\+|\-)?90(:|\s)00(:|\s)00\.?0?0?0?0?$)$
+ra updated w/ decimal: ^([0-1][0-9]|2[0-3])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?\d{0,4}?$
+dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?\d{0,4}?$|^(\+|\-)?90(:|\s)00(:|\s)00\.?0?0?0?0?$
+-made google sheet and specified data validation for template sheet for multiple target submission 
+-updated form bc of ^
+-added retrho application form confirmation email
+-added warnings abt going 2 spam folder various places
+-changed x's in WG RETRHOster to checkboxes. im rly starting to like google sheets sjdjssdk
+
+
+7/17/2024
+-added dates for timeframes in multiple target submission sheet 
+-added priority column "
+-structural group made edits to flier, including QR code and accessibility 
+
+7/23/2024
+-troubleshooted uf.retrho signin
+-messed w forms wording, links, organization in drive
+-fixes and minor clarifications to target submission sheet
+-consolidation of single target and multiple target forms->one form
+-brainstormed for five hundred years abt the target priority algorithm
+-updated emails for signup to list only the date instead of not-applicable time
+-started to mess w Python + Jupyter again before realizing I had it set up on my desktop not my laptop and therefore don't actually have an IDE ready to go so gave up to go play Minecraft after getting at Least Python to work
+
+
+7/25/2024 
+-manuals meeting: made questions 4 craig list and list of screenshots we need
+-after: go through manual to add resources links, update some info from Craig's manual
+-consolas'd console inputs and login info
+-minor editing (capitalization, spelling, grammar, punctuation...)
+-more minor editing (adding, phrasing, de-you'ing)
+
+7/28/2024
+-worked on Consolidate Submissions code. a lot.
+-mostly finished ^ (need to add email stuff based on comms recs)
+
+7/31/2024
+-implemented emails including list o targets at end of emails (just names, not other properties)
+
+8/1/2024
+-minor change in auto target submission email to spacing
+-implemented a way to choose from a list o calibration stars that will then tell you coords, rise and set times, V mag, and plot a finder chart (SO much fuckery went into this compared to what it would've been a few versions of astropy/astroquery/astroplan go, and im HIGHKEY mad abt it.)
+-added calib stars Up functionality
+->changed so they're listed by mag V brightness
+->added altaz functionality
+
+8/4/2024-8/5/2024
+-translated ipywidget->tkinter before giving up and retranslating -> pyqt5 more successfully
+-implemented reference code for consolidate submissions and emailing of this ref code
+-did sm work for the pyqt5 shit. now can customize objects to add to the list in addition to the default objs in there, and it's pretty fucking foolproofed
+-updated now var to update universally w/i Self
+
+8/5/2024-8/6/2024
+-more work on planning.py
+-added ability to upload .csv file that will then be parsed by pandas
+
+8/15/2024
+-added fov and ra/dec customization and plotting
+
+8/19/2024
+-lots of manual editing and adding
+-okay SO much manual shit lmaoooo. lord.
+
+8/26/2024
+-made mini manual on pre-check procedures
+-fixed my stupid coordinates code which I Knew wasn't going to be good enough when I wrote it but didn't bother to fix it until now which was silly.
+-priority/planning program: 
+	-no longer has string silliness w/ coordinates (my fault, was lazy abt it)
+	- no longer matters if simbad recognizes a name in tab 2 (uploaded spreadsheet tab), since coordinates are given in sheet (i.e., will default to coordinates if name does not return a result. this means it won't be able to give info on every object but Will be able to tell if it's up and can plot it)
+	- have probably shot the efficiency to trash trying to work out other bugs but that's. fine. will work that out later lol
+	- added Up functionality for uploaded target sheet objects
+
+8/27/2024
+-mini manual on pre-check procedures updated
+-main manual updating w/ more up-to-date figures
+
+9/4/2024
+-airmass plot functionality w/ brightness shading and in EST
+-fixed horrible efficiency of Up status
+-bug fixes (sheets template changed, self-input coords did not function correctly)
+
+9/6/2024
+-deconstructed code into littler files
+-added initial input csv file functionality (print)
+-aforementioned print function will be called if simbad cant find an object-from-file name
+
+9/9/2024
+-implemented semester rollover code for target submission (last 3 digits will reset to 001 at the beginning of a semester and the prior sem's targets)
+
+9/18/2024
+-implemented filter of up status (show only up, show all targets)
+-implemented Set Time functionality
+-pretty-fied the print csv target info
+-manual edits wrt notes
+-a lot more bug fixes(?) and code efficiency(?) changes
+-added Requirements determined by pipreqs
+-so so so so so much debugging and edge testing
+-commenting on code and other small QoL changes
+
+
+9/20/2024
+-changed manual bit for manual astrometry to taking screenshots
+-defined procedures for fixing target submission
+
+9/23/2024
+-made it so RA and dec are separate and Obvious
+-maybe fixed still issue w/ stupid s's in cords which ifucken hate 
+-added show WHAT time is being observed at bc otherwise I WILL FORGET !!!!!! 
+-fixed the time stuff we fucked up
+
+9/28/2024
+-updated GitHub
+-minor code updates + comments
+
+9/30/2024
+-fixed bug relating to SIMBAD query on magnitude 
+-fixed bug relating to uploading incorrect file
+-aesthetic and readability updates, especially to tab2 (uploaded targets)
+-scrollbar implemented
+-fixed bug in altitude go vs print (NO idea what caused this. genuinely. like I know what it is but not how it happened, bc like. in the Go function where we invoke simbad, it prints with brackets that need to be cut off, but not if you use the CSV button????? idk. rly.)
+-added setting/rising/circumpolar functionality
+-added sorting for tab1 values and though tab2 was being a Bitch which is somewhat surprising considering it should be simpler to do, things are somewhat functional (but ofc new bugs have been introduced)
+->go vs print submitted info bug (probs a Set Target issue)
+->tab1 won't update current text when self-typed target in ?
+
+----------------------------------
+
+priority/planning todo:
+-eventually Algo pick best targets for a night
+-star hop functionality
+-> choose start star, choose End star. algo search b/w these two guys for X mag diffs (greedy?), getting At Least some amount of arcmin closer each time? (ideally?)
+-checker to see ~where something is ??
+-rising/falling in da code tm
+-doesn't know what mizar is - ended up taking * zet01 UMa. idk if this is an issue for ME though or astropy??
+-is observable or not functionality (constraints in astroplan)
+-add added targets to sheet
+
+manual:
+-star mag -> exposure time + filter(?)
+-put darks/biases/flats/etc at BEGINNING of night to avoid humidity issues
+-add sbig notifs are Normal
+-add logout screenshot (bottom left lol)
+-define procedures for fixing signup/followup/other forms(???) :thumbs_up:

@@ -25,27 +25,30 @@ def sort_targets_tab1(self):
         setters.set_default(self, self.tab1, "Could not complete action.")
         return
     
-    self.tab1.current_target_name = self.tab1.target_names[0]
     initwin.init_tab1_target_names(self, self.tab1.target_names)
     helpers.determine_up(self.tab1.targets, self.tab1.target_names, self, self.tab1)
-    setters.set_default(self, self.tab1, "Sort complete.")
+    self.tab1.label_info.setText("Sort complete.")
 
 # Sort sheet values with a switch case depending on what is selected
 # FIXME: should eventually add ways to do current-date stuff and Obs Window
 def sort_targets_tab2(self):
     sort = self.tab2.sort_dropdown.currentText()
+    print(self.sheet)
     if sort == '':                    # Don't do anything if there's no target chosen or list uploaded
         setters.set_default(self, self.tab2, "Could not complete action. Ensure a sort method is chosen.")
         return
+    print(sort)
     match sort:
         case "Brightest":
             self.sheet = self.sheet.sort_values([MAG_V])
+            print(self.sheet)
         case "Dimmest":
-            self.sheet = self.sheet.sort_values([MAG_V], ascending=False)
+            self.sheet = self.sheet.sort_values(MAG_V, ascending=False)
+            print(self.sheet)
         case "Highest Priority":
-            self.sheet = self.sheet.sort_values([PRIORITY], ascending=False)
+            self.sheet = self.sheet.sort_values(PRIORITY, ascending=False)
+            print(self.sheet)
         # I'd add Lowest priority, but I don't see why that would be useful?
     # Update target list etc etc
-    initwin.init_tab2_target_names(self, 1)
-    self.tab2.current_target_name = self.tab2.target_names[0]
-    setters.set_default(self, self.tab2, "Sort complete.")
+    if initwin.init_tab2_target_names(self, 2):
+        self.tab2.label_info.setText("Sort complete.")

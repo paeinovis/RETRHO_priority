@@ -64,15 +64,16 @@ def init_window(self):
 
     width = 450
     height = 950
-    self.resize(width, height) 
+    self.resize(width, height)
+
+    self.fov = 15*u.arcmin
+    self.time_var = Time.now() 
+    self.use_curr_time = True
 
     # Init
     init_tab_one(self)
     init_tab_two(self)
     init_tab_three(self)
-    self.fov = 15*u.arcmin
-    self.time_var = Time.now() 
-    self.use_curr_time = True
 
     info = "Program time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates RA:\nCoordinates DEC:\nMagnitude V:\n\nRises:\nSets:\n\nAltitude:\nAzimuth:"
     self.tab1.label_info.setText(info)   
@@ -89,12 +90,15 @@ def init_tab_one(self):
 
     # List of possible alignment stars - can be changed if desired. 
     # Currently organized by brightest mag V to dimmest
-    temp_target_names = ['Antares', 'Arcturus', 'Vega', 'Capella', 'Procyon',
-                        'Altair', 'Aldebaran', 'Spica', 'Fomalhaut', 'Deneb', 
-                        'Regulus', 'Dubhe', 'Mirfak', 'Polaris', 'Schedar',
-                        'Kappa Oph', '* b03 Cyg' '* g Her', '* 49 Cas']
+    temp_target_names = ['Arcturus', 'Vega', 'Capella', 'Procyon', 'Altair', 
+                         'Aldebaran', 'Antares', 'Spica', 'Fomalhaut', 'Deneb', 
+                         'Regulus', 'Dubhe', 'Mirfak', 'Polaris', 'Schedar',
+                         'Kappa Oph', '* b03 Cyg', '* g Her', '* 49 Cas']
 
-    init_tab1_target_names(self, temp_target_names)
+    self.tab1.target_names = []
+    self.tab1.up_target_names = [] 
+    self.tab1.targets = []
+    self.tab1.mags = []
 
     # Widgets
     self.tab1.targets_dropdown = QComboBox()
@@ -138,6 +142,8 @@ def init_tab_one(self):
     self.tab1.layout.addWidget(self.tab1.update_button)
     self.tab1.layout.addWidget(self.tab1.show_up_button)
     self.tab1.setLayout(self.tab1.layout)
+
+    init_tab1_target_names(self, temp_target_names)
 
 def init_tab_two(self):
     # Tab 2 objects: 
@@ -272,24 +278,24 @@ def open_file_dialog(self):                       # Function from https://python
             self.sheet = pandas.read_csv(file_name)
             self.sheet = self.sheet.iloc[1:]                                               # Gets rid of format instructional row
             self.sheet = self.sheet[self.sheet[RA].str.contains("nan") == False]           # Gets rid of blank rows
-            self.tab2.targets = []
-            self.tab2.target_names = []
+            self.tab2.targets[:] = []
+            self.tab2.target_names[:] = []
             msg = "Successfully parsed file."
         except (KeyError):
             msg = "Error parsing file. Please check template of submitted sheet."
             setters.set_default(self, self.tab2, msg)
             return
-        init_tab2_target_names(self, 2)
+        init_tab2_target_names(self, 1)
     else:
         self.sheet = None
         setters.set_default(self, self.tab2, "Error parsing file.")
 
 
 def init_tab1_target_names(self, temp_target_names):
-    self.tab1.target_names = []
-    self.tab1.up_target_names = [] 
-    self.tab1.targets = []
-    self.tab1.mags = []
+    self.tab1.target_names[:] = []
+    self.tab1.up_target_names[:] = [] 
+    self.tab1.targets[:] = []
+    self.tab1.mags[:] = []
 
     now = Time.now()
     for star in temp_target_names:
@@ -306,12 +312,16 @@ def init_tab1_target_names(self, temp_target_names):
             self.tab1.up_target_names.append(star)
         else:
             self.tab1.target_names.append(star)
+    self.tab1.current_target_name = self.tab1.target_names[0]
+    self.tab1.current_target = self.tab1.targets[0]
+    self.tab1.coords = self.tab1.current_target.coord
+    helpers.determine_up(self.tab1.targets, self.tab1.target_names, self, self.tab1)
 
 
 def init_tab2_target_names(self, start_index):
-    self.tab2.target_names = [] 
-    self.tab2.up_target_names = [] 
-    self.tab2.targets = []
+    self.tab2.target_names[:] = [] 
+    self.tab2.up_target_names[:] = [] 
+    self.tab2.targets[:] = []
 
     for i in range(start_index, len(self.sheet) + 1):
         try: 
@@ -331,8 +341,13 @@ def init_tab2_target_names(self, start_index):
             curr_target = FixedTarget(curr_coords, name=name)
             self.tab2.targets.append(curr_target)
             self.tab2.target_names.append(name)
-    helpers.determine_up(self.tab2.targets, self.tab2.target_names, self, self.tab2)
-    self.tab2.label_info.setText(msg)
-    self.tab2.targets_dropdown.clear()
-    self.tab2.targets_dropdown.addItems(self.tab2.target_names)
-    return True
+    if helpers.determine_up(self.tab2.targets, self.tab2.target_names, self, self.tab2):
+        self.tab2.label_info.setText(msg)
+        self.tab2.targets_dropdown.clear()
+        self.tab2.targets_dropdown.addItems(self.tab2.target_names)
+        self.tab2.current_target_name = self.tab2.target_names[0]
+        self.tab2.current_target = self.tab2.targets[0]
+        self.tab2.coords = self.tab2.current_target.coord
+        return True
+    msg = "Error parsing file. Please check template of submitted sheet."
+    setters.set_default(self, self.tab2, msg)
