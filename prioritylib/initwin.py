@@ -190,7 +190,7 @@ def init_tab_two(self):
     self.tab2.show_up_button = QPushButton("Only Show Up Targets Toggle")
     self.tab2.show_up_button.clicked.connect(lambda: helpers.change_only_show_up(self, self.tab2))
 
-    self.tab2.file_upload_button = QPushButton("Upload file")
+    self.tab2.file_upload_button = QPushButton("Upload MasterTargetSheet .csv file")
     self.tab2.file_upload_button.clicked.connect(lambda: open_file_dialog(self))
 
     # Entire tab layout
