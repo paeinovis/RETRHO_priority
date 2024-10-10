@@ -12,7 +12,6 @@ from astroquery.simbad import Simbad
 from PyQt5.QtWidgets import QComboBox, QMainWindow, QApplication, QPushButton, QWidget, QAction, QVBoxLayout, QLabel, QTabWidget, QInputDialog, QLineEdit, QFileDialog, QScrollArea
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
-import sys
 import astropy.coordinates as coordinates
 import time
 
@@ -31,3 +30,9 @@ from astropy.utils import iers
 # iers.conf.IERS_A_URL_MIRROR = 'https://datacenter.iers.org/data/9/finals2000A.all'
 # from astroplan import download_IERS_A
 # download_IERS_A()
+
+import sys
+from PyQt5.QtCore import QFile, QTextStream
+from PyQt5.QtWidgets import QApplication
+
+import qdarktheme

@@ -172,6 +172,7 @@ priority/planning todo:
 -doesn't know what mizar is - ended up taking * zet01 UMa. idk if this is an issue for ME though or astropy??
 -is observable or not functionality (constraints in astroplan)
 -add added targets to sheet
+-dark mode?
 
 manual:
 -star mag -> exposure time + filter(?)
