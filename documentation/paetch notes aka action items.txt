@@ -160,6 +160,9 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 -fixed tab2 list sorting function
 -fixed go vs print submitted info bug after much toiling
 
+10/10/2024
+-added use-OS-theme-for-theme (dark/light)
+-minor change to target doesn't rise
 
 ----------------------------------
 
@@ -168,15 +171,13 @@ priority/planning todo:
 -star hop functionality
 -> choose start star, choose End star. algo search b/w these two guys for X mag diffs (greedy?), getting At Least some amount of arcmin closer each time? (ideally?)
 -checker to see ~where something is ??
--rising/falling in da code tm
 -doesn't know what mizar is - ended up taking * zet01 UMa. idk if this is an issue for ME though or astropy??
 -is observable or not functionality (constraints in astroplan)
 -add added targets to sheet
--dark mode?
 
 manual:
 -star mag -> exposure time + filter(?)
 -put darks/biases/flats/etc at BEGINNING of night to avoid humidity issues
 -add sbig notifs are Normal
 -add logout screenshot (bottom left lol)
--define procedures for fixing signup/followup/other forms(???) :thumbs_up:
+-define procedures for fixing signup/followup/other forms(???)

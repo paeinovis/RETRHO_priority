@@ -136,7 +136,11 @@ def print_csv_target(self):
                             str_info += "Currently rising\n\n"
                     else:
                         str_info += "Currently below horizon\n\n"
-                except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):
+                except (TargetNeverUpWarning):
+                        str_info += "\nRises: Does not rise\n"
+                        str_info += "Sets: Does not set\n"
+                        str_info += "Never rises\n\n"
+                except (TargetAlwaysUpWarning, AttributeError):
                     str_info += "\nRises: Does not rise\n"
                     str_info += "Sets: Does not set\n"
                     str_info += "Circumpolar\n\n"
