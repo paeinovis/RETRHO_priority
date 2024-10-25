@@ -1,3 +1,5 @@
+import astroquery.exceptions
+import astroquery.exceptions
 from lib import *
 import prioritylib.helpers as helpers
 import prioritylib.setters as setters
@@ -22,7 +24,9 @@ def get_info_of_obj(self, tab):
         else:
             setters.set_default(self, tab, "Object not found. Check spelling or upload file and try again.")
         return
-
+    except (exceptions.LargeQueryWarning, ReadTimeout, TimeoutError):
+        setters.set_default(self, tab, "Query timed out. Please retry action.")
+        return
     # SIMBAD shenanigans to get some relevant info and convert it to hmsdms bc SIMBAD doesn't do that natively anymore???
     info = [tab.result_table["main_id"][0], tab.coords.to_string('hmsdms'), tab.result_table["V"][0]]
 

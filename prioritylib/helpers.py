@@ -1,6 +1,8 @@
 from lib import *
 from prioritylib.global_ import *
 import prioritylib.setters as setters
+import prioritylib.helpers as helpers
+
 # Convert Time object to EST (where RHO is located)
 def eastern(self, time, rise_set_bool):
     if rise_set_bool or self.use_curr_time:
@@ -36,10 +38,10 @@ def determine_up(targets, obj_names, self, tab):
     
     tab.targets_dropdown.clear()                      # Reset dropdown menu
 
-    if not tab.only_show_up:                          # If all targets are being shown, print these
+    if not tab.only_show_up:                          # If all targets are being shown, add all targets to dropdown
         tab.targets_dropdown.addItems(tab.target_names)             
         tab.current_target_name = tab.target_names[0]
-    else:                                             # If only Up targets are being shown, print these
+    else:                                             # If only Up targets are being shown, add only up targets to dropdown
         tab.targets_dropdown.addItems(tab.up_target_names)
         tab.current_target_name = tab.up_target_names[0]
 
@@ -124,3 +126,12 @@ def change_only_show_up(self, tab):
         set_label = "Now showing all targets."
     determine_up(tab.targets, tab.target_names, self, tab)
     tab.label_info.setText(set_label)
+
+# CSV from Google doesn't play nice with Astropy Time object; have to convert !
+def convert_date(date):
+    date_values = date.split("/")
+    year = date_values[2]
+    day = date_values[1]
+    month = date_values[0]
+    new_date = year + "-" + month + "-" + day
+    return new_date

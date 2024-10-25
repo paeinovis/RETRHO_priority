@@ -1,5 +1,6 @@
 from lib import *
 from prioritylib.global_ import *
+import prioritylib.initwin as initwin
 
 # Change FOV to user input
 def change_fov(self):
@@ -51,6 +52,9 @@ def change_time(self):
         new_time = Time(new_time)
         self.time_var = new_time
         self.use_curr_time = False
+        # If tab2 has sheet uploaded, re-check obs windows   
+        if self.sheet is not None:
+            reset_tab2(self)
         update = "Updated time to " + str(self.time_var) + "."
     except (ValueError):
         pass
@@ -60,11 +64,16 @@ def change_time(self):
 
 # Reset bool to using (approx.) Now wherever applicable instead of a static datetime
 def use_now_time(self):
-    self.use_curr_time = True
-    self.time_var = Time.now()    
-    self.tab3.label_info.setText("Program will now use current time.")
 
-def set_default(self, tab, msg):           # Failure condition, set to defaults
+    self.use_curr_time = True
+    self.time_var = Time.now() 
+    # If tab2 has sheet uploaded, re-check obs windows   
+    if self.sheet is not None:
+        reset_tab2(self)
+    self.tab3.label_info.setText("Program will now use current time.\nIf applicable, submission targets have been reset.")
+
+# Failure condition, set to defaults
+def set_default(self, tab, msg):           
     tab.label_info.setText("")
     time.sleep(1)
     tab.label_info.setText(msg)
@@ -72,3 +81,17 @@ def set_default(self, tab, msg):           # Failure condition, set to defaults
     tab.current_target = FixedTarget(tab.coords, name="Default Coordinates Plot")
     tab.current_target_name = "Default"
     tab.result_table = None   
+
+def reset_tab2(self):
+    # Update target list etc etc
+    if initwin.init_tab2_target_names(self):
+        self.tab2.label_info.setText("Submission targets reset.")
+
+        self.tab2.targets_dropdown.clear()                      # Reset dropdown menu
+
+        if not self.tab2.only_show_up:                          # If all targets are being shown, add all to dropdown
+            self.tab2.targets_dropdown.addItems(self.tab2.target_names)             
+            self.tab2.current_target_name = self.tab2.target_names[0]
+        else:                                                   # If only Up targets are being shown, add only up targets to dropdown
+            self.tab2.targets_dropdown.addItems(self.tab2.up_target_names)
+            self.tab2.current_target_name = self.tab2.up_target_names[0]

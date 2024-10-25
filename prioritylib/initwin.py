@@ -1,5 +1,9 @@
 from lib import *
-from prioritylib import *
+import prioritylib.plots as plots
+import prioritylib.helpers as helpers
+import prioritylib.printers as printers
+import prioritylib.setters as setters
+from prioritylib.global_ import *
 import prioritylib.sorters as sorters
 
 # Creates main window with all tabs
@@ -61,6 +65,7 @@ def init_window(self):
     self.layout.addWidget(self.tabs)
     container.setLayout(self.layout)
     self.w = None
+    self.sheet = None
 
     width = 450
     height = 950
@@ -153,6 +158,8 @@ def init_tab_two(self):
     self.tab2.current_target = FixedTarget(self.tab2.coords, name="Default Coordinates Plot")
     self.tab2.current_target_name = "Default"
     self.tab2.result_table = None   
+    self.tab2.sheet_index = 1
+    self.tab2.sheet_index_end = 1
 
     self.tab2.only_show_up = False
 
@@ -190,7 +197,7 @@ def init_tab_two(self):
     self.tab2.show_up_button = QPushButton("Only Show Up Targets Toggle")
     self.tab2.show_up_button.clicked.connect(lambda: helpers.change_only_show_up(self, self.tab2))
 
-    self.tab2.file_upload_button = QPushButton("Upload MasterTargetSheet .csv file")
+    self.tab2.file_upload_button = QPushButton("Upload TargetMasterSheet.csv file")
     self.tab2.file_upload_button.clicked.connect(lambda: open_file_dialog(self))
 
     # Entire tab layout
@@ -285,7 +292,9 @@ def open_file_dialog(self):                       # Function from https://python
             msg = "Error parsing file. Please check template of submitted sheet."
             setters.set_default(self, self.tab2, msg)
             return
-        init_tab2_target_names(self, 1, len(self.sheet) + 1)
+        self.tab2.sheet_index = 1
+        self.tab2.sheet_index_end = len(self.sheet) + 1
+        init_tab2_target_names(self)
     else:
         self.sheet = None
         setters.set_default(self, self.tab2, "Error parsing file.")
@@ -321,15 +330,35 @@ def init_tab1_target_names(self, temp_target_names):
 
 
 # (Re)init tab2 values
-def init_tab2_target_names(self, start_index, end_index):
+def init_tab2_target_names(self):
     if self.tab2.target_names:
         self.tab2.target_names[:] = [] 
         self.tab2.up_target_names[:] = [] 
         self.tab2.targets[:] = []
 
-    for i in range(start_index, end_index):
+    # Declare var as default to Now
+    time_var_to_jd = Time.now()
+    
+    # If not using current time, however, use set date time
+    if not self.use_curr_time:
+        time_var_to_jd = self.time_var
+
+    # Convert either now time or set time to jd for comparison purposes
+    time_var_to_jd = time_var_to_jd.to_value('jd', 'float')
+
+    for i in range(self.tab2.sheet_index, self.tab2.sheet_index_end):
         try: 
             name = self.sheet.at[i, NAME]
+        
+            # Get obs window and determine if applicable to set time 
+            obs_win_open = self.sheet.at[i, OBS_WIN_OPEN]
+            obs_win_open = Time(helpers.convert_date(obs_win_open))
+            obs_win_close = self.sheet.at[i, OBS_WIN_CLOSE]
+            obs_win_close = Time(helpers.convert_date(obs_win_close))
+
+            if obs_win_open.to_value('jd', 'float') < time_var_to_jd and obs_win_close.to_value('jd' ,'float') < time_var_to_jd:
+                continue
+
             curr_target = FixedTarget(coordinates.SkyCoord.from_name(name), name=name)
             self.tab2.targets.append(curr_target)
             self.tab2.target_names.append(name)

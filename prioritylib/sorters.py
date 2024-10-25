@@ -43,6 +43,8 @@ def sort_targets_tab2(self):
         case "Highest Priority":
             self.sheet.sort_values(PRIORITY, inplace=True, ignore_index=True)
         # I'd add Lowest priority, but I don't see why that would be useful?
-    # Update target list etc etc
-    if initwin.init_tab2_target_names(self, 0, len(self.sheet)):
-        self.tab2.label_info.setText("Sort complete.")
+    # Some shenanigans abt pandas that makes the sheet act weird idrk
+    self.tab2.sheet_index = 0
+    self.tab2.sheet_index_end = len(self.sheet)
+    setters.reset_tab2(self)
+    self.tab2.label_info.setText("Sort complete.")
