@@ -15,7 +15,7 @@ def get_info_of_obj(self, tab):
         return
 
     try: 
-        result_table = Simbad.query_object(tab.current_target_name)[["main_id", "ra", "dec", "V"]]
+        result_table = Simbad.query_object(helpers.clip_name(tab.current_target_name))[["main_id", "ra", "dec", "V"]]
         tab.result_table = result_table
         tab.coords = SkyCoord(ra=result_table["ra"], dec=result_table["dec"])
     except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError, AttributeError):
@@ -58,7 +58,7 @@ def get_info_of_obj(self, tab):
     # Gather relevant info
     str_info = ""
     str_info += "Program time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n\n"
-    str_info += "Name: " + tab.current_target_name + "\n"
+    str_info += "Name: " + helpers.clip_name(tab.current_target_name) + "\n"
     str_info += "Identifier: " + info[0] + "\n"
     str_info += "Up now: " + up_now + "\n\n"
     str_info += "Coordinates RA: " + coords_ra + "\n"
@@ -96,11 +96,12 @@ def print_csv_target(self):
     str_info = "Could not complete action. Ensure a target is uploaded and selected."
     if self.tab2.current_target_name != "Default":
         name = self.tab2.current_target_name
-        name_up = self.tab2.current_target_name + " (Up)"
         if name in self.tab2.target_names:
-            index_of_name = self.tab2.target_names.index(name) 
-        elif name_up in self.tab2.target_names:
-            index_of_name = self.tab2.target_names.index(name_up) 
+            try:
+                index_of_name = list(np.where(self.sheet[NAME] == helpers.clip_name(name))[0])[0].item() + self.tab2.sheet_index
+            except(ValueError, KeyError):
+                setters.set_default(self, self.tab2, str_info)
+                return
         else:
             setters.set_default(self, self.tab2, str_info)
             return

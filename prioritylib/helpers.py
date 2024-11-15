@@ -24,14 +24,19 @@ def determine_up(targets, obj_names, self, tab):
     tab.up_target_names = []
 
     for obj in targets:
+        priority = ""
         obj_name = obj_names[index]
         if "(Up)" in obj_name:                        # Cuts off the (Up) part of the name if the star is indeed up
-            obj_name = obj_name[0:-5]
+            obj_name = obj_name.replace(' (Up)', '')
+        if "(" in obj_name:
+            priority = obj_name[-4:]                 # Grabs priority to add back to string if it was given to begin with
+            obj_name = obj_name[0:-4]                 # Cuts off priority (e.g., ' (1)') part of name if available
+
         if RHO.target_is_up(self.time_var, obj):
-            new_list.append(obj_name + " (Up)")       # So user can see if a given object is in the sky. I maybe should've done this in a smarter manner but it's too late now!!!!
-            tab.up_target_names.append(obj_name + " (Up)")
+            new_list.append(obj_name + " (Up)" + priority)       # So user can see if a given object is in the sky. I maybe should've done this in a smarter manner but it's too late now!!!!
+            tab.up_target_names.append(obj_name + " (Up)" + priority)
         else:
-            new_list.append(obj_name)
+            new_list.append(obj_name + priority)
         index += 1
     tab.label_info.setText("Target \"Up\" Status successfully updated.")
     tab.target_names = new_list
@@ -59,8 +64,6 @@ def update(self, tab):
         return False
     
     up_name = name
-    if "(Up)" in name:              # Cuts off the (Up) part of the name if the star is indeed up, so SIMBAD can query
-        name = name[0:-5]
 
     index_of_name = 0
     if up_name in tab.target_names:                        # Doesn't have to check both lists since the given name will be in the target_names list or something is broken
@@ -85,7 +88,7 @@ def update(self, tab):
         return True
     
     try:                                                   # Aforementioned tab1 things
-        result_table = Simbad.query_object(tab.current_target_name)[["main_id", "ra", "dec", "V"]]
+        result_table = Simbad.query_object(clip_name(tab.current_target_name))[["main_id", "ra", "dec", "V"]]
         tab.result_table = result_table
         tab.coords = SkyCoord(ra=result_table["ra"], dec=tab.result_table["dec"])
         if up_name not in tab.target_names:
@@ -135,3 +138,10 @@ def convert_date(date):
     month = date_values[0]
     new_date = year + "-" + month + "-" + day
     return new_date
+
+def clip_name(name):
+    if "(Up)" in name:                        # Cuts off the (Up) part of the name if the star is indeed up
+        name = name.replace(' (Up)', '')
+    if "(" in name:
+        name = name[0:-4]                 # Cuts off priority (e.g., ' (1)') part of name if available
+    return name

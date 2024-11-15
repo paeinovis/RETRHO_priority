@@ -15,6 +15,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 import astropy.coordinates as coordinates
 import time
+import numpy as np
 
 # Warnings imports
 from astroquery.simbad.core import NoResultsWarning

@@ -80,7 +80,7 @@ def init_window(self):
     init_tab_two(self)
     init_tab_three(self)
 
-    info = "Program time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates RA:\nCoordinates DEC:\nMagnitude V:\n\nRises:\nSets:\n\nAltitude:\nAzimuth:"
+    info = "Program time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates RA:\nCoordinates DEC:\nMagnitude V:\n\nRises:\nSets:\n\n\nAltitude:\nAzimuth:"
     self.tab1.label_info.setText(info)   
 
 def init_tab_one(self):
@@ -312,7 +312,7 @@ def init_tab1_target_names(self, temp_target_names):
     for star in temp_target_names:
         try:
             if "(Up)" in star:              # Cuts off the (Up) part of the name if the star is indeed up, so SIMBAD can query
-                star = star[0:-5]
+                star = star.replace(' (Up)', '')
             curr_target = FixedTarget(coordinates.SkyCoord.from_name(star), name=star)
             self.tab1.targets.append(curr_target)
             self.tab1.mags.append(Simbad.query_object(star)[["V"][0]])
@@ -349,18 +349,21 @@ def init_tab2_target_names(self):
     for i in range(self.tab2.sheet_index, self.tab2.sheet_index_end):
         try: 
             name = self.sheet.at[i, NAME]
-        
             # Get obs window and determine if applicable to set time 
             obs_win_open = self.sheet.at[i, OBS_WIN_OPEN]
             obs_win_open = Time(helpers.convert_date(obs_win_open))
             obs_win_close = self.sheet.at[i, OBS_WIN_CLOSE]
             obs_win_close = Time(helpers.convert_date(obs_win_close))
 
+            # Compare window to see if obs window currently open
             if obs_win_open.to_value('jd', 'float') < time_var_to_jd and obs_win_close.to_value('jd' ,'float') < time_var_to_jd:
                 continue
 
             curr_target = FixedTarget(coordinates.SkyCoord.from_name(name), name=name)
             self.tab2.targets.append(curr_target)
+
+            priority = " (" + str(self.sheet.at[i, PRIORITY]) + ")"
+            name += priority
             self.tab2.target_names.append(name)
             msg = "Successfully parsed file."
         except (KeyError, ValueError, TypeError):
@@ -368,6 +371,10 @@ def init_tab2_target_names(self):
             setters.set_default(self, self.tab2, msg)
             return False
         except (NameResolveError, NoResultsWarning):
+            priority = " (" + str(self.sheet.at[i, PRIORITY]) + ")"
+            name += priority
+            self.tab2.target_names.append(name)
+            
             name = self.sheet[NAME][i]
             curr_coords = self.sheet[RA][i] + " " + self.sheet.at[i, DEC]
             curr_coords = SkyCoord(curr_coords, unit=(u.hour, u.deg), frame='icrs')

@@ -176,6 +176,25 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 ->functional w/ sorting?
 -feel like I missed something and there's a bug somewhere but I can't make it happen so.
 
+10/27/2024
+-wrote down regex formulers in admin js doc
+-define procedures for fixing signup form
+-added a few comments
+
+11/6/2024
+-added reminder email functionality to form and appscript
+
+11/11/2024
+-re-alphabetized retrhoster
+-consolidated RETRHO admin stuff
+
+11/1/2024
+-implemented priority showing next to names
+->this sounds like not a hard thing to do but it was so hard for no reason.
+->had to get numpy on the horn like no joke . (this was inevitable)
+->added a function to get Just target name so we can stop doing that manually every time it's necessary (this is so we could have the priority in the names without a lot of shenanigans)
+
+
 ----------------------------------
 
 priority/planning todo:
@@ -186,13 +205,20 @@ priority/planning todo:
 -doesn't know what mizar is - ended up taking * zet01 UMa. idk if this is an issue for ME though or astropy??
 -is observable or not functionality (constraints in astroplan)
 -add added targets to sheet
--future proof code (comments, instructions, locations...)
--display priority next to things?
--write down regex explanations and their formulers
+-move targets to expired in main big target?
+-pseudocode for our programs?
 
 manual:
 -star mag -> exposure time + filter(?)
 -put darks/biases/flats/etc at BEGINNING of night to avoid humidity issues
 -add sbig notifs are Normal
 -add logout screenshot (bottom left lol)
--define procedures for fixing signup/followup/other forms(???)
+
+
+
+
+
+
+
+
+

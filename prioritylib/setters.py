@@ -64,7 +64,6 @@ def change_time(self):
 
 # Reset bool to using (approx.) Now wherever applicable instead of a static datetime
 def use_now_time(self):
-
     self.use_curr_time = True
     self.time_var = Time.now() 
     # If tab2 has sheet uploaded, re-check obs windows   
