@@ -37,5 +37,4 @@ import sys
 from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWidgets import QApplication
 
-import qdarktheme
 from requests import ReadTimeout
