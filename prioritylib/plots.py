@@ -12,8 +12,8 @@ def plot_coords(self, tab):
         if not helpers.update(self, tab):           
             setters.set_default(self, tab, "Could not complete action. Ensure a target is uploaded and selected.")
             return  
-        title = "Finder image for " + tab.current_target_name + " (FOV = " + str(self.fov) + ")"
-        title_2 = tab.current_target_name + " Finder Plot"
+        title = "Finder image for " + helpers.clip_name(tab.current_target_name) + " (FOV = " + str(self.fov) + ")"
+        title_2 = helpers.clip_name(tab.current_target_name) + " Finder Plot"
     figure = plt.figure()
     canvas = FigureCanvas(figure)
     ax, hdu = plot_finder_image(tab.coords, fov_radius=self.fov);
@@ -30,7 +30,7 @@ def plot(self, tab):
         return  
                 
     try: 
-        result_table = Simbad.query_object(tab.current_target_name)[["main_id", "ra", "dec", "V"]]
+        result_table = Simbad.query_object(helpers.clip_name(tab.current_target_name))[["main_id", "ra", "dec", "V"]]
     except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError):
         setters.set_default(self, tab, "Object not found. Check spelling or upload file and try again.")
         return
@@ -39,10 +39,10 @@ def plot(self, tab):
     canvas = FigureCanvas(figure)
     ax, hdu = plot_finder_image(tab.current_target, fov_radius=self.fov);
     wcs = WCS(hdu.header)
-    title = "Finder image for " + tab.current_target_name + " (FOV = " + str(self.fov) + ")"
+    title = "Finder image for " + helpers.clip_name(tab.current_target_name) + " (FOV = " + str(self.fov) + ")"
     ax.set_title(title)
     figure.add_subplot(ax, projection=wcs)
-    title = tab.current_target_name + " Finder Plot"
+    title = helpers.clip_name(tab.current_target_name) + " Finder Plot"
     canvas.setWindowTitle(title)
     canvas.show()
 
@@ -55,8 +55,8 @@ def airmass_plot(self, tab):
         setters.set_default(self, tab, "Object not found. Check spelling or upload file and try again.")
         return  
     else:
-        title = "Airmass plot for " + tab.current_target_name
-        title_2 = tab.current_target_name + " Airmass Plot"
+        title = "Airmass plot for " + helpers.clip_name(tab.current_target_name)
+        title_2 = helpers.clip_name(tab.current_target_name) + " Airmass Plot"
 
     if self.use_curr_time:
         self.time_var = Time.now()                                # Update time If needed
