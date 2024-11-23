@@ -114,7 +114,7 @@ def print_csv_target(self):
             # Makes sense chronologically for the code Below 
             if PRETTY_COLUMNS[index] == "\nB Filter":
                 str_info += "\nProgram time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n"
-                up_now = str(RHO.target_is_up(self.time_var, self.tab2.current_target))
+                up_now = str(RHO.target_is_up(self.time_var, self.tab2.current_target)).lower()
                 if "[" in up_now:
                     up_now = up_now.split("[")[1]
                     up_now = up_now.split("]")[0]
@@ -132,7 +132,7 @@ def print_csv_target(self):
                     rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=self.tab2.current_target), True)]
                     str_info += "\nRises: " + rise_set[0] + " EST" + "\n"
                     str_info += "Sets: " + rise_set[1] + " EST" + "\n"
-                    if up_now == "True":
+                    if up_now == "true":
                         diff_rise = abs(self.time_var - RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target))
                         diff_set = abs(self.time_var - RHO.target_set_time(time=self.time_var, target=self.tab2.current_target))
                         if diff_rise > diff_set:
