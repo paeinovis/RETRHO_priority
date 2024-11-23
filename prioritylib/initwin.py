@@ -311,8 +311,7 @@ def init_tab1_target_names(self, temp_target_names):
     now = Time.now()
     for star in temp_target_names:
         try:
-            if "(Up)" in star:              # Cuts off the (Up) part of the name if the star is indeed up, so SIMBAD can query
-                star = star.replace(' (Up)', '')
+            star = helpers.clip_name(star)
             curr_target = FixedTarget(coordinates.SkyCoord.from_name(star), name=star)
             self.tab1.targets.append(curr_target)
             self.tab1.mags.append(Simbad.query_object(star)[["V"][0]])

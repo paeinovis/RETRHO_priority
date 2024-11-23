@@ -26,11 +26,12 @@ def determine_up(targets, obj_names, self, tab):
     for obj in targets:
         priority = ""
         obj_name = obj_names[index]
+        if "(Up)" in obj_name:                        # Cuts off the (Up) part of the name if the star is indeed up
+            obj_name = obj_name.replace(' (Up)', '')
         if "(" in obj_name:
             priority = obj_name[-4:]                 # Grabs priority to add back to string if it was given to begin with
-
-        obj_name = clip_name(obj_name)
-
+            obj_name = obj_name[0:-4]                # Cuts off priority (e.g., ' (1)') part of name if available
+            
         try: 
             if RHO.target_is_up(self.time_var, obj):
                 new_list.append(obj_name + " (Up)" + priority)       # So user can see if a given object is in the sky. I maybe should've done this in a smarter manner but it's too late now!!!!
