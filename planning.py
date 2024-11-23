@@ -13,4 +13,5 @@ app.exec_()
 
 
 
-# Authors: Pae Swanson, Triana Almeyda, Cassidy Camera, Hannah Luft
+# Authors: Pae Swanson
+# Contributors: Cassidy Camera, Hannah Luft

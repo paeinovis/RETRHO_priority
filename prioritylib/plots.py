@@ -14,14 +14,21 @@ def plot_coords(self, tab):
             return  
         title = "Finder image for " + helpers.clip_name(tab.current_target_name) + " (FOV = " + str(self.fov) + ")"
         title_2 = helpers.clip_name(tab.current_target_name) + " Finder Plot"
-    figure = plt.figure()
-    canvas = FigureCanvas(figure)
-    ax, hdu = plot_finder_image(tab.coords, fov_radius=self.fov);
-    wcs = WCS(hdu.header)
-    ax.set_title(title)
-    figure.add_subplot(ax, projection=wcs)
-    canvas.setWindowTitle(title_2)
-    canvas.show();
+    try:
+        figure = plt.figure()
+        canvas = FigureCanvas(figure)
+        ax, hdu = plot_finder_image(tab.coords, fov_radius=self.fov);
+        wcs = WCS(hdu.header)
+        ax.set_title(title)
+        figure.add_subplot(ax, projection=wcs)
+        canvas.setWindowTitle(title_2)
+        canvas.show();
+    except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError):
+        setters.set_default(self, tab, "Object not found. Check spelling or upload file and try again.")
+        return
+    except (exceptions.LargeQueryWarning, ReadTimeout, TimeoutError, IERSWarning):
+        setters.set_default(self, tab, "Download timed out, please try again.")
+        return
 
 # Plot finder image based on name    
 def plot(self, tab):
@@ -31,20 +38,24 @@ def plot(self, tab):
                 
     try: 
         result_table = Simbad.query_object(helpers.clip_name(tab.current_target_name))[["main_id", "ra", "dec", "V"]]
+    
+        figure = plt.figure()
+        canvas = FigureCanvas(figure)
+        ax, hdu = plot_finder_image(tab.current_target, fov_radius=self.fov);
+        wcs = WCS(hdu.header)
+        title = "Finder image for " + helpers.clip_name(tab.current_target_name) + " (FOV = " + str(self.fov) + ")"
+        ax.set_title(title)
+        figure.add_subplot(ax, projection=wcs)
+        title = helpers.clip_name(tab.current_target_name) + " Finder Plot"
+        canvas.setWindowTitle(title)
+        canvas.show()
     except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError):
         setters.set_default(self, tab, "Object not found. Check spelling or upload file and try again.")
         return
-    
-    figure = plt.figure()
-    canvas = FigureCanvas(figure)
-    ax, hdu = plot_finder_image(tab.current_target, fov_radius=self.fov);
-    wcs = WCS(hdu.header)
-    title = "Finder image for " + helpers.clip_name(tab.current_target_name) + " (FOV = " + str(self.fov) + ")"
-    ax.set_title(title)
-    figure.add_subplot(ax, projection=wcs)
-    title = helpers.clip_name(tab.current_target_name) + " Finder Plot"
-    canvas.setWindowTitle(title)
-    canvas.show()
+    except (exceptions.LargeQueryWarning, ReadTimeout, TimeoutError, IERSWarning):
+        setters.set_default(self, tab, "Download timed out, please try again.")
+        return
+
 
 # Plot airmass based on target
 def airmass_plot(self, tab):        
@@ -60,15 +71,21 @@ def airmass_plot(self, tab):
 
     if self.use_curr_time:
         self.time_var = Time.now()                                # Update time If needed
-
-    figure = plt.figure(figsize=(8, 6))
-    ax = plot_airmass(tab.current_target, 
-                        observer=RHO, 
-                        time=self.time_var.to_datetime(timezone=RHO.timezone), 
-                        use_local_tz=True,
-                        brightness_shading=True)
-    ax.set_title(title)
-    figure.add_subplot(ax)
-    canvas = FigureCanvas(figure)
-    canvas.setWindowTitle(title_2)
-    canvas.show();
+    try: 
+        figure = plt.figure(figsize=(8, 6))
+        ax = plot_airmass(tab.current_target, 
+                            observer=RHO, 
+                            time=self.time_var.to_datetime(timezone=RHO.timezone), 
+                            use_local_tz=True,
+                            brightness_shading=True)
+        ax.set_title(title)
+        figure.add_subplot(ax)
+        canvas = FigureCanvas(figure)
+        canvas.setWindowTitle(title_2)
+        canvas.show();
+    except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError):
+        setters.set_default(self, tab, "Object not found. Check spelling or upload file and try again.")
+        return
+    except (exceptions.LargeQueryWarning, ReadTimeout, TimeoutError, IERSWarning):
+        setters.set_default(self, tab, "Download timed out, please try again.")
+        return

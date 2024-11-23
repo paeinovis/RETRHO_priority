@@ -318,11 +318,16 @@ def init_tab1_target_names(self, temp_target_names):
             self.tab1.mags.append(Simbad.query_object(star)[["V"][0]])
         except(NameResolveError):
             continue
-        if RHO.target_is_up(now, curr_target):
-            self.tab1.target_names.append(star + " (Up)")       # So user can see if a given object is in the sky
-            self.tab1.up_target_names.append(star)
-        else:
-            self.tab1.target_names.append(star)
+        try:
+            if RHO.target_is_up(now, curr_target):
+                self.tab1.target_names.append(star + " (Up)")       # So user can see if a given object is in the sky
+                self.tab1.up_target_names.append(star)
+            else:
+                self.tab1.target_names.append(star)
+        except (exceptions.LargeQueryWarning, ReadTimeout, TimeoutError, IERSWarning):
+            setters.set_default(self, self.tab1, "Download timed out, please try again.")
+            return
+
     self.tab1.current_target_name = self.tab1.target_names[0]
     self.tab1.current_target = self.tab1.targets[0]
     self.tab1.coords = self.tab1.current_target.coord

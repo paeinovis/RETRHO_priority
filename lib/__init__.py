@@ -28,6 +28,7 @@ warnings.filterwarnings("ignore", message="The plot_date function was deprecated
 from astroplan import FixedTarget, Observer, TargetAlwaysUpWarning, TargetNeverUpWarning
 from pyvo.dal.exceptions import DALFormatError, DALAccessError, DALServiceError, DALQueryError
 from astropy.utils import iers
+from astropy.utils.iers import IERSWarning
 # iers.conf.IERS_A_URL = 'ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.all'
 # iers.conf.IERS_A_URL_MIRROR = 'https://datacenter.iers.org/data/9/finals2000A.all'
 # from astroplan import download_IERS_A
