@@ -12,6 +12,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         init_window(self)
+        self.setWindowIcon(QIcon('retrhogo.png'))
     
     # Init secondary window(s) FIXME: presently not used - if this stays this way, delete
     def new_window(self):
@@ -27,6 +28,7 @@ class PopupWindow(QWidget):
         self.label = QLabel()
         layout.addWidget(self.label)
         self.setLayout(layout)
+        self.setWindowIcon(QIcon('retrhogo.png'))
 
 # class for scrollable label        (from Geeks for Geeks)
 class ScrollLabel(QScrollArea):

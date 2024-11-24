@@ -22,6 +22,7 @@ def plot_coords(self, tab):
         ax.set_title(title)
         figure.add_subplot(ax, projection=wcs)
         canvas.setWindowTitle(title_2)
+        canvas.setWindowIcon(QIcon('retrhogo.png'))
         canvas.show();
     except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError):
         setters.set_default(self, tab, "Object not found. Check spelling or upload file and try again.")
@@ -48,6 +49,7 @@ def plot(self, tab):
         figure.add_subplot(ax, projection=wcs)
         title = helpers.clip_name(tab.current_target_name) + " Finder Plot"
         canvas.setWindowTitle(title)
+        canvas.setWindowIcon(QIcon('retrhogo.png'))
         canvas.show()
     except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError):
         setters.set_default(self, tab, "Object not found. Check spelling or upload file and try again.")
@@ -82,6 +84,7 @@ def airmass_plot(self, tab):
         figure.add_subplot(ax)
         canvas = FigureCanvas(figure)
         canvas.setWindowTitle(title_2)
+        canvas.setWindowIcon(QIcon('retrhogo.png'))
         canvas.show();
     except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError):
         setters.set_default(self, tab, "Object not found. Check spelling or upload file and try again.")

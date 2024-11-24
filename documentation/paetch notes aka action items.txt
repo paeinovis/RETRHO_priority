@@ -214,9 +214,10 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 11/23/2024
 -error catching
 -fixed up/rising/setting status
--made labels copy-able
+-made labels (generated/printed text) copy-able
 -hopefully fixed timeout thing meir ran into
 -created start.bat file (named priRHOrity.bat) and shortcut to avoid cmd line use to run
+-added rhogo to taskbar and popup windows
 
 ----------------------------------
 
@@ -244,10 +245,6 @@ manual:
 
 general:
 -pseudocode for our programs?
-
-
-
-
 
 
 

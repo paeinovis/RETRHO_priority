@@ -11,7 +11,7 @@ from astroplan.plots import plot_airmass, plot_finder_image, plot_sky
 from astroquery.simbad import Simbad
 from astroquery import exceptions
 from PyQt5.QtWidgets import QComboBox, QMainWindow, QApplication, QPushButton, QWidget, QAction, QVBoxLayout, QLabel, QTabWidget, QInputDialog, QLineEdit, QFileDialog, QScrollArea
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QIcon
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import pyqtSlot
 import astropy.coordinates as coordinates
@@ -40,3 +40,7 @@ from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWidgets import QApplication
 
 from requests import ReadTimeout
+
+import ctypes
+myappid = u'prirhority'
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
