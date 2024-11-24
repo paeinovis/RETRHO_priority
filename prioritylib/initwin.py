@@ -363,7 +363,7 @@ def init_tab2_target_names(self):
             obs_win_close = Time(helpers.convert_date(obs_win_close))
 
             # Compare window to see if obs window currently open
-            if obs_win_open.to_value('jd', 'float') < time_var_to_jd and obs_win_close.to_value('jd' ,'float') < time_var_to_jd:
+            if obs_win_open.to_value('jd', 'float') < time_var_to_jd and (obs_win_close.to_value('jd' ,'float') + 1) < time_var_to_jd:
                 continue
 
             curr_target = FixedTarget(coordinates.SkyCoord.from_name(name), name=name)
