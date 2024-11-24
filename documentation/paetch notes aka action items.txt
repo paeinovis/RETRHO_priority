@@ -215,6 +215,8 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 -error catching
 -fixed up/rising/setting status
 -made labels copy-able
+-hopefully fixed timeout thing meir ran into
+-created start.bat file (named priRHOrity.bat) and shortcut to avoid cmd line use to run
 
 ----------------------------------
 
@@ -227,7 +229,7 @@ priority todo:
 -is observable or not functionality (constraints in astroplan)
 -add added targets to sheet (I don't remember what this means...............)
 -add .exe file to run planning.py
--fix timeout thing meir ran into
+-add rising/setting to custom values
 
 admin todo:
 -first/second shifts on observing nights?
