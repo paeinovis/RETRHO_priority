@@ -24,6 +24,7 @@ def change_ra(self):
         new_coords = SkyCoord(coord_str_1, coord_str_2, unit=(u.hour, u.deg), frame='icrs')
         self.tab3.coords = new_coords
         self.tab3.ra = new_ra
+        self.tab3.current_target = FixedTarget(self.tab3.coords, name="Custom Coordinates Plot")
         update = "Updated RA to " + str(self.tab3.ra) + ".\nCoordinates are now " + self.tab3.coords.to_string(style="hmsdms", sep=":", precision=1) + "."
     except (ValueError):
         pass
@@ -39,6 +40,7 @@ def change_dec(self):
         new_coords = SkyCoord(coord_str_1, coord_str_2, unit=(u.hour, u.deg), frame='icrs')
         self.tab3.coords = new_coords
         self.tab3.dec = new_dec
+        self.tab3.current_target = FixedTarget(self.tab3.coords, name="Custom Coordinates Plot")
         update = "Updated Dec to " + str(self.tab3.dec) + ".\nCoordinates are now " + self.tab3.coords.to_string(style="hmsdms", sep=":", precision=1) + "."
     except (ValueError):
         pass

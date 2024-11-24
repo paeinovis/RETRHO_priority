@@ -262,6 +262,9 @@ def init_tab_three(self):
     self.tab3.plot_airmass_button = QPushButton("Plot airmass")
     self.tab3.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self, self.tab3))
 
+    self.tab3.get_info_button = QPushButton("Print info")
+    self.tab3.get_info_button.clicked.connect(lambda: printers.tab3_print(self, self.tab3))
+
     # Entire tab layout
     self.tab3.layout = QVBoxLayout()
     self.tab3.layout.addWidget(self.tab3.fov_input)
@@ -275,6 +278,7 @@ def init_tab_three(self):
     self.tab3.layout.addWidget(self.tab3.now_button)
     self.tab3.layout.addWidget(self.tab3.plot_button)
     self.tab3.layout.addWidget(self.tab3.plot_airmass_button)
+    self.tab3.layout.addWidget(self.tab3.get_info_button)
     self.tab3.layout.addWidget(self.tab3.label_info)
 
     self.tab3.setLayout(self.tab3.layout)

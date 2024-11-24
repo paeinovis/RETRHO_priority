@@ -163,3 +163,45 @@ def print_csv_target(self):
 
     self.tab2.label_info.setText(str_info)
 
+def tab3_print(self, tab):
+    up_now = str(RHO.target_is_up(self.time_var, tab.current_target))
+    if "[" in up_now:
+        up_now = up_now.split("[")[1]
+        up_now = up_now.split("]")[0]
+
+    alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=RHO.location))
+    str_alt = str(alt_az.alt)[1:-8] 
+    if "s" not in str_alt:
+        str_alt += "s"
+    str_az = str(alt_az.az)[1:-8]
+    if "s" not in str_az:
+        str_az += "s"
+    
+    # Gather relevant info
+    str_info = ""
+    str_info += "Program time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n\n"
+    str_info += "Up now: " + up_now + "\n\n"
+    str_info += "Coordinates RA: " + tab.ra + "\n"
+    str_info += "Coordinates DEC: " + tab.dec + "\n\n"      
+    try: 
+        rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)]
+        str_info += "Rises: " + rise_set[0] + " EST" + "\n"
+        str_info += "Sets: " + rise_set[1] + " EST" + "\n"
+        if "true" in up_now.lower():
+            diff_rise = abs(self.time_var - RHO.target_rise_time(time=self.time_var, target=tab.current_target))
+            diff_set = abs(self.time_var - RHO.target_set_time(time=self.time_var, target=tab.current_target))
+            if diff_rise > diff_set:
+                str_info += "Currently setting\n\n" 
+            else:
+                str_info += "Currently rising\n\n"
+        else:
+            str_info += "Currently below horizon\n\n"
+    except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):
+        str_info += "Rises: Does not rise\n"
+        str_info += "Sets: Does not set\n"
+        str_info += "Circumpolar\n\n"
+    str_info += "Altitude: " + str_alt + "\n"
+    str_info += "Azimuth: " + str_az
+    
+    # Set label as the string info
+    tab.label_info.setText(str_info)
