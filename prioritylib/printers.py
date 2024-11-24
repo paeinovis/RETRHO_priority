@@ -132,6 +132,7 @@ def print_csv_target(self):
                     rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=self.tab2.current_target), True)]
                     str_info += "\nRises: " + rise_set[0] + " EST" + "\n"
                     str_info += "Sets: " + rise_set[1] + " EST" + "\n"
+                    # Compare rise and set times to determine if it's setting, rising, or not up
                     if up_now == "true":
                         diff_rise = abs(self.time_var - RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target))
                         diff_set = abs(self.time_var - RHO.target_set_time(time=self.time_var, target=self.tab2.current_target))

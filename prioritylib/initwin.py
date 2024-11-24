@@ -116,6 +116,7 @@ def init_tab_one(self):
 
     self.tab1.label_info = QLabel()
     self.tab1.label_info.setGeometry(200, 200, 200, 30)
+    self.tab1.label_info.label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
     self.tab1.targets_dropdown_button = QPushButton("Go")
     self.tab1.targets_dropdown_button.clicked.connect(lambda: printers.get_info_of_obj(self, self.tab1))
@@ -172,6 +173,7 @@ def init_tab_two(self):
     # Widgets
     self.tab2.label_info = ScrollLabel(self)
     self.tab2.label_info.setGeometry(200, 200, 200, 30)
+    self.tab2.label_info.label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
     self.tab2.targets_dropdown_button = QPushButton("Go")
     self.tab2.targets_dropdown_button.clicked.connect(lambda: printers.get_info_of_obj(self, self.tab2))
@@ -233,6 +235,7 @@ def init_tab_three(self):
 
     self.tab3.label_info = QLabel()
     self.tab3.label_info.setGeometry(200, 200, 200, 30)
+    self.tab3.label_info.label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
     self.tab3.fov_input_button.clicked.connect(lambda: setters.change_fov(self))
 

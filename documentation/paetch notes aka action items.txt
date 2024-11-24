@@ -211,6 +211,11 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 -> + now listed as One hour before actual sunset
 -updated email info/templates
 
+11/23/2024
+-error catching
+-fixed up/rising/setting status
+
+
 ----------------------------------
 
 priority todo:
