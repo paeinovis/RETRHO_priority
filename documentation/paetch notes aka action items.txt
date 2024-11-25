@@ -219,6 +219,10 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 -created start.bat file (named priRHOrity.bat) and shortcut to avoid cmd line use to run
 -added rhogo to taskbar and popup windows
 -added print info to tab3 (coordinate, rise/set, alt/az)
+
+11/24/2024
+-fixed a duplicate error in tab2
+
 ----------------------------------
 
 priority todo:
