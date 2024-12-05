@@ -76,7 +76,7 @@ def get_info_of_obj(self, tab):
     max_alt = 90 - RHO_LAT + dec_num
     if max_alt > 90:
         max_alt = abs(max_alt - 180)
-    min_alt = 90 - RHO_LAT - max_alt
+    min_alt = RHO_LAT - (90 - dec_num)
 
     try: 
         rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
@@ -160,7 +160,7 @@ def print_csv_target(self):
                 max_alt = 90 - RHO_LAT + dec_num
                 if max_alt > 90:
                     max_alt = abs(max_alt - 180)
-                min_alt = 90 - RHO_LAT - max_alt
+                min_alt = RHO_LAT - (90 - dec_num)
 
                 try: 
                     rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=self.tab2.current_target), True)[1]]
@@ -233,7 +233,7 @@ def tab3_print(self, tab):
     max_alt = 90 - RHO_LAT + dec_num
     if max_alt > 90:
         max_alt = abs(max_alt - 180)
-    min_alt = 90 - RHO_LAT - max_alt
+    min_alt = RHO_LAT - (90 - dec_num)
 
     try: 
         rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
