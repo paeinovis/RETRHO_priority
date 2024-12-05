@@ -231,6 +231,11 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 -fixed time/date display bug
 -added maximum and minimum altitude
 
+12/5/2024
+-ACTUALLY fixed time window bug (SOMEONE (me) didn't know how jd time worked .)
+-added circumpolar vs. never rises distinguisher for ALL info printers (had only added to one before)
+-fixed minimum altitude
+
 ----------------------------------
 
 priority todo:

@@ -82,7 +82,7 @@ def init_window(self):
     init_tab_two(self)
     init_tab_three(self)
 
-    info = "Program time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates RA:\nCoordinates DEC:\nMagnitude V:\n\nRises:\nSets:\n\n\nAltitude:\nAzimuth:\n\nMaximum altitude:\nMinimum altitude:"
+    info = "Program time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates RA:\nCoordinates DEC:\nMagnitude V:\n\nRises:\nSets:\n\n\nMaximum altitude:\nMinimum altitude:\n\nAltitude:\nAzimuth:\n"
     self.tab1.label_info.setText(info)   
 
 def init_tab_one(self):
@@ -365,14 +365,14 @@ def init_tab2_target_names(self):
             # Get obs window and determine if applicable to set time 
             obs_win_open = self.sheet.at[i, OBS_WIN_OPEN]
             obs_win_open = Time(helpers.convert_date(obs_win_open))
-            obs_win_open_jd = obs_win_open.to_value('jd', 'float')
+            obs_win_open_sec = obs_win_open.to_value('cxcsec', 'float')
 
             obs_win_close = self.sheet.at[i, OBS_WIN_CLOSE]
             obs_win_close = Time(helpers.convert_date(obs_win_close))
-            obs_win_close_jd = obs_win_close.to_value('jd' ,'float') + 1
+            obs_win_close_sec = obs_win_close.to_value('cxcsec' ,'float') + 43200
 
             # Compare window to see if obs window currently open
-            if obs_win_open_jd < time_var_to_jd and obs_win_close_jd < time_var_to_jd:
+            if obs_win_open_sec < time_var_to_jd and obs_win_close_sec < time_var_to_jd:
                 continue
 
             curr_target = FixedTarget(coordinates.SkyCoord.from_name(name), name=name)

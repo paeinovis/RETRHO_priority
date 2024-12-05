@@ -68,6 +68,16 @@ def get_info_of_obj(self, tab):
         str_info += "Magnitude V: " + str(round(float(info[2]), 5)) + "\n\n"
     except (UserWarning):
         str_info += "Magnitude V: Not available\n\n"
+
+    dec_num = tab.coords.to_string('decimal')
+    if (isinstance(dec_num, list)):
+        dec_num = dec_num[0]
+    dec_num = float(dec_num.split(' ')[1])
+    max_alt = 90 - RHO_LAT + dec_num
+    if max_alt > 90:
+        max_alt = abs(max_alt - 180)
+    min_alt = 90 - RHO_LAT - max_alt
+
     try: 
         rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
@@ -81,24 +91,24 @@ def get_info_of_obj(self, tab):
                 str_info += "Currently rising\n\n"
         else:
             str_info += "Currently below horizon\n\n"
-    except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):
+
+        str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
+        str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+    except (TargetNeverUpWarning):
+        str_info += "Rises: Does not rise\n"
+        str_info += "Sets: Does not set\n"
+        str_info += "Never rises\n\n"
+        str_info += "Maximum altitude: N/A\n"
+        str_info += "Minimum altitude: N/A\n\n"
+    except (TargetAlwaysUpWarning, AttributeError):
         str_info += "Rises: Does not rise\n"
         str_info += "Sets: Does not set\n"
         str_info += "Circumpolar\n\n"
-
+        str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
+        str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+    
     str_info += "Altitude: " + str_alt + "\n"
-    str_info += "Azimuth: " + str_az + "\n\n"
-
-    dec_num = tab.coords.to_string('decimal')[0]
-    dec_num = float(dec_num.split(' ')[1])
-    max_alt = 90 - RHO_LAT + dec_num
-    if max_alt > 90:
-        max_alt = abs(max_alt - 180)
-    min_alt = 90 - RHO_LAT - dec_num
-    if min_alt < 0:
-        min_alt = abs(min_alt)
-    str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
-    str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+    str_info += "Azimuth: " + str_az + "\n"
 
     # Set label as the string info
     tab.label_info.setText(str_info)
@@ -142,11 +152,20 @@ def print_csv_target(self):
                 if "s" not in str_az:
                     str_az += "s"
 
+                dec_num = self.tab2.coords.to_string('decimal')
+
+                if (isinstance(dec_num, list)):
+                    dec_num = dec_num[0]
+                dec_num = float(dec_num.split(' ')[1])
+                max_alt = 90 - RHO_LAT + dec_num
+                if max_alt > 90:
+                    max_alt = abs(max_alt - 180)
+                min_alt = 90 - RHO_LAT - max_alt
+
                 try: 
                     rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=self.tab2.current_target), True)[1]]
-                    str_info += "\nRises: " + rise_set[0] + " EST" + "\n"
+                    str_info += "Rises: " + rise_set[0] + " EST" + "\n"
                     str_info += "Sets: " + rise_set[1] + " EST" + "\n"
-                    # Compare rise and set times to determine if it's setting, rising, or not up
                     if "true" in up_now.lower():
                         diff_rise = abs(self.time_var - RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target))
                         diff_set = abs(self.time_var - RHO.target_set_time(time=self.time_var, target=self.tab2.current_target))
@@ -156,29 +175,25 @@ def print_csv_target(self):
                             str_info += "Currently rising\n\n"
                     else:
                         str_info += "Currently below horizon\n\n"
+
+                    str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
+                    str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
                 except (TargetNeverUpWarning):
-                        str_info += "\nRises: Does not rise\n"
-                        str_info += "Sets: Does not set\n"
-                        str_info += "Never rises\n\n"
+                    str_info += "Rises: Does not rise\n"
+                    str_info += "Sets: Does not set\n"
+                    str_info += "Never rises\n\n"
+                    str_info += "Maximum altitude: N/A\n"
+                    str_info += "Minimum altitude: N/A\n\n"
                 except (TargetAlwaysUpWarning, AttributeError):
-                    str_info += "\nRises: Does not rise\n"
+                    str_info += "Rises: Does not rise\n"
                     str_info += "Sets: Does not set\n"
                     str_info += "Circumpolar\n\n"
-
+                    str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
+                    str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+                
                 str_info += "Altitude: " + str_alt + "\n"
-                str_info += "Azimuth: " + str_az + "\n\n"
+                str_info += "Azimuth: " + str_az + "\n"
 
-                dec_num = self.tab2.coords.to_string('decimal')[0]
-                dec_num = float(dec_num.split(' ')[1])
-                max_alt = 90 - RHO_LAT + dec_num
-                if max_alt > 90:
-                    max_alt = abs(max_alt - 180)
-                min_alt = 90 - RHO_LAT - dec_num
-                if min_alt < 0:
-                    min_alt = abs(min_alt)
-                str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
-                str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
-            
             # Prints info from CSV per column 
             str_info += PRETTY_COLUMNS[index] + ": "      # Unfortunately, the Names of the columns are not easy to read. So PRETTY_COLUMNS are the stringified versions
             value = str(self.sheet[column][index_of_name])
@@ -210,6 +225,16 @@ def tab3_print(self, tab):
     str_info += "Up now: " + up_now + "\n\n"
     str_info += "Coordinates RA: " + tab.ra + "\n"
     str_info += "Coordinates DEC: " + tab.dec + "\n\n"      
+    
+    dec_num = tab.coords.to_string('decimal')
+    if (isinstance(dec_num, list)):
+        dec_num = dec_num[0]
+    dec_num = float(dec_num.split(' ')[1])
+    max_alt = 90 - RHO_LAT + dec_num
+    if max_alt > 90:
+        max_alt = abs(max_alt - 180)
+    min_alt = 90 - RHO_LAT - max_alt
+
     try: 
         rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
@@ -223,24 +248,24 @@ def tab3_print(self, tab):
                 str_info += "Currently rising\n\n"
         else:
             str_info += "Currently below horizon\n\n"
-    except (TargetAlwaysUpWarning, TargetNeverUpWarning, AttributeError):
+
+        str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
+        str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+    except (TargetNeverUpWarning):
+        str_info += "Rises: Does not rise\n"
+        str_info += "Sets: Does not set\n"
+        str_info += "Never rises\n\n"
+        str_info += "Maximum altitude: N/A\n"
+        str_info += "Minimum altitude: N/A\n\n"
+    except (TargetAlwaysUpWarning, AttributeError):
         str_info += "Rises: Does not rise\n"
         str_info += "Sets: Does not set\n"
         str_info += "Circumpolar\n\n"
-
-    str_info += "Altitude: " + str_alt + "\n"
-    str_info += "Azimuth: " + str_az + "\n\n"
-
-    dec_num = tab.coords.to_string('decimal')[0]
-    dec_num = float(dec_num.split(' ')[1])
-    max_alt = 90 - RHO_LAT + dec_num
-    if max_alt > 90:
-        max_alt = abs(max_alt - 180)
-    min_alt = 90 - RHO_LAT - dec_num
-    if min_alt < 0:
-        min_alt = abs(min_alt)
-    str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
-    str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+        str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
+        str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
     
+    str_info += "Altitude: " + str_alt + "\n"
+    str_info += "Azimuth: " + str_az + "\n"
+
     # Set label as the string info
     tab.label_info.setText(str_info)
