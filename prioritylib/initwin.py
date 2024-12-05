@@ -82,7 +82,7 @@ def init_window(self):
     init_tab_two(self)
     init_tab_three(self)
 
-    info = "Program time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates RA:\nCoordinates DEC:\nMagnitude V:\n\nRises:\nSets:\n\n\nAltitude:\nAzimuth:"
+    info = "Program time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates RA:\nCoordinates DEC:\nMagnitude V:\n\nRises:\nSets:\n\n\nAltitude:\nAzimuth:\n\nMaximum altitude:\nMinimum altitude:"
     self.tab1.label_info.setText(info)   
 
 def init_tab_one(self):

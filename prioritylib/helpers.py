@@ -7,8 +7,12 @@ import prioritylib.helpers as helpers
 def eastern(self, time, rise_set_bool):
     if rise_set_bool or self.use_curr_time:
         est = time.to_datetime(timezone=RHO.timezone)
-        return est.strftime('%H:%M:%S')
-    return time.strftime("%H:%M:%S")
+        hms = est.strftime('%H:%M:%S')
+        day = est.strftime('%m/%d/%Y')
+        return [day, hms]
+    hms = time.strftime('%H:%M:%S')
+    day = time.strftime('%m/%d/%Y')
+    return [day, hms]
 
 # Determines which objects are above horizon
 def determine_up(targets, obj_names, self, tab):

@@ -57,7 +57,8 @@ def get_info_of_obj(self, tab):
     
     # Gather relevant info
     str_info = ""
-    str_info += "Program time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n\n"
+    prog_time = helpers.eastern(self, self.time_var, False)
+    str_info += "Program time: " + prog_time[0] + " " + prog_time[1] + "\n\n"
     str_info += "Name: " + helpers.clip_name(tab.current_target_name) + "\n"
     str_info += "Identifier: " + info[0] + "\n"
     str_info += "Up now: " + up_now + "\n\n"
@@ -68,7 +69,7 @@ def get_info_of_obj(self, tab):
     except (UserWarning):
         str_info += "Magnitude V: Not available\n\n"
     try: 
-        rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)]
+        rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
         str_info += "Sets: " + rise_set[1] + " EST" + "\n"
         if "true" in up_now.lower():
@@ -84,9 +85,21 @@ def get_info_of_obj(self, tab):
         str_info += "Rises: Does not rise\n"
         str_info += "Sets: Does not set\n"
         str_info += "Circumpolar\n\n"
+
     str_info += "Altitude: " + str_alt + "\n"
-    str_info += "Azimuth: " + str_az
-    
+    str_info += "Azimuth: " + str_az + "\n\n"
+
+    dec_num = tab.coords.to_string('decimal')[0]
+    dec_num = float(dec_num.split(' ')[1])
+    max_alt = 90 - RHO_LAT + dec_num
+    if max_alt > 90:
+        max_alt = abs(max_alt - 180)
+    min_alt = 90 - RHO_LAT - dec_num
+    if min_alt < 0:
+        min_alt = abs(min_alt)
+    str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
+    str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+
     # Set label as the string info
     tab.label_info.setText(str_info)
 
@@ -113,7 +126,8 @@ def print_csv_target(self):
             # This is here for aesthetic purposes in print - makes more sense to have the rise/set time, up status, etc Before observing info
             # Makes sense chronologically for the code Below 
             if PRETTY_COLUMNS[index] == "\nB Filter":
-                str_info += "\nProgram time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n"
+                prog_time = helpers.eastern(self, self.time_var, False)
+                str_info += "Program time: " + prog_time[0] + " " + prog_time[1] + "\n\n"
                 up_now = str(RHO.target_is_up(self.time_var, self.tab2.current_target))
                 if "[" in up_now:
                     up_now = up_now.split("[")[1]
@@ -129,7 +143,7 @@ def print_csv_target(self):
                     str_az += "s"
 
                 try: 
-                    rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=self.tab2.current_target), True)]
+                    rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=self.tab2.current_target), True)[1]]
                     str_info += "\nRises: " + rise_set[0] + " EST" + "\n"
                     str_info += "Sets: " + rise_set[1] + " EST" + "\n"
                     # Compare rise and set times to determine if it's setting, rising, or not up
@@ -150,8 +164,20 @@ def print_csv_target(self):
                     str_info += "\nRises: Does not rise\n"
                     str_info += "Sets: Does not set\n"
                     str_info += "Circumpolar\n\n"
+
                 str_info += "Altitude: " + str_alt + "\n"
-                str_info += "Azimuth: " + str_az + "\n"
+                str_info += "Azimuth: " + str_az + "\n\n"
+
+                dec_num = self.tab2.coords.to_string('decimal')[0]
+                dec_num = float(dec_num.split(' ')[1])
+                max_alt = 90 - RHO_LAT + dec_num
+                if max_alt > 90:
+                    max_alt = abs(max_alt - 180)
+                min_alt = 90 - RHO_LAT - dec_num
+                if min_alt < 0:
+                    min_alt = abs(min_alt)
+                str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
+                str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
             
             # Prints info from CSV per column 
             str_info += PRETTY_COLUMNS[index] + ": "      # Unfortunately, the Names of the columns are not easy to read. So PRETTY_COLUMNS are the stringified versions
@@ -179,12 +205,13 @@ def tab3_print(self, tab):
     
     # Gather relevant info
     str_info = ""
-    str_info += "Program time: " + str(self.time_var)[0:10] + " " + str(helpers.eastern(self, self.time_var, False)) +"\n\n"
+    prog_time = helpers.eastern(self, self.time_var, False)
+    str_info += "Program time: " + prog_time[0] + " " + prog_time[1] + "\n\n"
     str_info += "Up now: " + up_now + "\n\n"
     str_info += "Coordinates RA: " + tab.ra + "\n"
     str_info += "Coordinates DEC: " + tab.dec + "\n\n"      
     try: 
-        rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True), helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)]
+        rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
         str_info += "Sets: " + rise_set[1] + " EST" + "\n"
         if "true" in up_now.lower():
@@ -200,8 +227,20 @@ def tab3_print(self, tab):
         str_info += "Rises: Does not rise\n"
         str_info += "Sets: Does not set\n"
         str_info += "Circumpolar\n\n"
+
     str_info += "Altitude: " + str_alt + "\n"
-    str_info += "Azimuth: " + str_az
+    str_info += "Azimuth: " + str_az + "\n\n"
+
+    dec_num = tab.coords.to_string('decimal')[0]
+    dec_num = float(dec_num.split(' ')[1])
+    max_alt = 90 - RHO_LAT + dec_num
+    if max_alt > 90:
+        max_alt = abs(max_alt - 180)
+    min_alt = 90 - RHO_LAT - dec_num
+    if min_alt < 0:
+        min_alt = abs(min_alt)
+    str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
+    str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
     
     # Set label as the string info
     tab.label_info.setText(str_info)

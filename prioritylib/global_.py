@@ -2,8 +2,9 @@ import astropy.coordinates as coordinates
 from astroplan import Observer
 from astropy import units as u
 
+RHO_LAT = 29.4001
 RHO = Observer(
-    location=coordinates.EarthLocation(lat=29.4001, lon=-82.5862*u.deg, height=23*u.m),
+    location=coordinates.EarthLocation(lat=RHO_LAT, lon=-82.5862*u.deg, height=23*u.m),
     timezone='US/Eastern',
     name='Rosemary Hill Observatory'
 )

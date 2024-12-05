@@ -223,6 +223,14 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 11/24/2024
 -fixed a duplicate error in tab2
 
+12/2/2024
+-QoL changes to signup js code (readability, const column numbers at top instead of using the raw numbers in each instance, making it easier to change form if needed)
+-Started working on Shift implementation in copy of signup
+
+12/4/2024
+-fixed time/date display bug
+-added maximum and minimum altitude
+
 ----------------------------------
 
 priority todo:
@@ -234,7 +242,7 @@ priority todo:
 -is observable or not functionality (constraints in astroplan)
 -add added targets to sheet (I don't remember what this means...............)
 -add .exe file to run planning.py
--add rising/setting to custom values
+-glitch w changing time altitude for HD 219134 (??? cant replicate)
 
 admin todo:
 -first/second shifts on observing nights?

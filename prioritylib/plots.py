@@ -58,7 +58,6 @@ def plot(self, tab):
         setters.set_default(self, tab, "Download timed out, please try again.")
         return
 
-
 # Plot airmass based on target
 def airmass_plot(self, tab):        
     if tab is self.tab3:
