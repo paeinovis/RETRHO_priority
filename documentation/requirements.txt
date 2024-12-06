@@ -7,4 +7,4 @@ pyerfa==2.0.1.4
 PyQt5==5.15.11
 PyQt5_sip==12.15.0
 pyvo==1.5.2
-numpy=2.1.1
+numpy==2.1.1

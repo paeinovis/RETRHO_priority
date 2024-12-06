@@ -41,6 +41,11 @@ from PyQt5.QtWidgets import QApplication
 
 from requests import ReadTimeout
 
-import ctypes
-myappid = u'prirhority'
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
+
+try:
+    import ctypes
+    myappid = u'prirhority'
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except (AttributeError):
+    pass
