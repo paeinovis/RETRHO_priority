@@ -3,13 +3,8 @@ from prioritylib.global_ import *
 import prioritylib.setters as setters
 import prioritylib.helpers as helpers
 
-# Convert Time object to EST (where RHO is located)
-def eastern(self, time, rise_set_bool):
-    if rise_set_bool or self.use_curr_time:
-        est = time.to_datetime(timezone=RHO.timezone)
-        hms = est.strftime('%H:%M:%S')
-        day = est.strftime('%m/%d/%Y')
-        return [day, hms]
+# Convert Time object to string according to timezone
+def convert_time_to_string(self, time):
     hms = time.strftime('%H:%M:%S')
     day = time.strftime('%m/%d/%Y')
     return [day, hms]
@@ -21,8 +16,8 @@ def determine_up(targets, obj_names, self, tab):
         return
     
     if self.use_curr_time:
-        self.time_var = Time.now()                    # Update time If Needed
-    new_list = []                                     # List of objects with up info
+        self.time_var = dt.datetime.now(self.obs_timezone)                    # Update time If Needed
+    new_list = []                                                          # List of objects with up info
     index = 0
 
     tab.up_target_names = []
@@ -37,7 +32,7 @@ def determine_up(targets, obj_names, self, tab):
             obj_name = obj_name[0:-4]                # Cuts off priority (e.g., ' (1)') part of name if available
             
         try: 
-            if RHO.target_is_up(self.time_var, obj):
+            if OBS.target_is_up(self.time_var, obj):
                 new_list.append(obj_name + " (Up)" + priority)       # So user can see if a given object is in the sky. I maybe should've done this in a smarter manner but it's too late now!!!!
                 tab.up_target_names.append(obj_name + " (Up)" + priority)
             else:
@@ -66,7 +61,7 @@ def determine_up(targets, obj_names, self, tab):
 # Kind of a vague but important function for checking, not so necessarily an update now
 def update(self, tab):
     if self.use_curr_time:
-        self.time_var = Time.now()                                # Update time If needed
+        self.time_var = dt.datetime.now(tz=self.obs_timezone)        # Update time If needed
 
     name = tab.targets_dropdown.currentText()
     if name == '' or tab.target_names is None:                    # Don't do anything if there's no target chosen or list uploaded
@@ -89,7 +84,7 @@ def update(self, tab):
             tab.targets_dropdown.addItems(tab.up_target_names)
         
         try:
-            if RHO.target_is_up(self.time_var, tab.current_target):
+            if OBS.target_is_up(self.time_var, tab.current_target):
                 tab.targets_dropdown.setCurrentText(up_name)
                 tab.target_names[index_of_name] = up_name
             else:
@@ -109,14 +104,14 @@ def update(self, tab):
             tab.targets.insert(0, tab.current_target)
             tab.target_names.insert(0, name)
             try:
-                if RHO.target_is_up(self.time_var, tab.current_target):
+                if OBS.target_is_up(self.time_var, tab.current_target):
                     name = name + " (Up)"
                     tab.up_target_names.insert(0, name)     
                     up_name = name
             except (exceptions.LargeQueryWarning, ReadTimeout, TimeoutError, IERSWarning):
                 setters.set_default(self, tab, "Download timed out, please try again.")
                 return
-    except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError, AttributeError):
+    except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError, DALOverflowWarning, AttributeError):
         return False        
 
     tab.targets_dropdown.clear()       
@@ -125,7 +120,7 @@ def update(self, tab):
     else:
         tab.targets_dropdown.addItems(tab.up_target_names)
     try: 
-        if RHO.target_is_up(self.time_var, tab.current_target):
+        if OBS.target_is_up(self.time_var, tab.current_target):
             tab.targets_dropdown.setCurrentText(up_name)
             tab.target_names[index_of_name] = up_name
         else:

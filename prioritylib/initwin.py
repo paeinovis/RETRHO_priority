@@ -20,15 +20,33 @@ class MainWindow(QMainWindow):
             self.w = PopupWindow()
         self.w.show()
 
-# Creates secondary window(s) w/ label FIXME: presently not used - if this stays this way, delete
+# Creates secondary window(s) w/ label
 class PopupWindow(QWidget):
     def __init__(self):
         super().__init__()
         layout = QVBoxLayout()
+        self.setWindowTitle("Alert")
+
         self.label = QLabel()
+        self.button = QPushButton("OK")
+        self.button.clicked.connect(shutdown)
         layout.addWidget(self.label)
+        layout.addWidget(self.button)
+
         self.setLayout(layout)
+
         self.setWindowIcon(QIcon('retrhogo.png'))
+        
+        width = 200
+        height = 100
+        self.resize(width, height)
+
+
+def DAL_error(self):
+    self.label.setText("There is a DAL Service Error preventing the program from connecting.\nPlease ensure you are connected to the Internet.")
+
+def shutdown():
+    exit(1)
 
 # class for scrollable label        (from Geeks for Geeks)
 class ScrollLabel(QScrollArea):
@@ -56,9 +74,11 @@ def init_window(self):
     self.tab1 = QWidget()
     self.tab2 = QWidget()
     self.tab3 = QWidget()
+    self.tab4 = QWidget()
     self.tabs.addTab(self.tab1, "Stars from name")
     self.tabs.addTab(self.tab2, "Objects from file")
-    self.tabs.addTab(self.tab3, "Custom values")
+    self.tabs.addTab(self.tab3, "Custom plot values")
+    self.tabs.addTab(self.tab4, "Observer values")
 
     # Overall window stuff
     container = QWidget()
@@ -69,18 +89,22 @@ def init_window(self):
     self.w = None
     self.sheet = None
 
-    width = 450
+    width = 600
     height = 950
     self.resize(width, height)
 
+    # Sets obs_lat, obs_lon, obs_height, obs_timezone, and obs_name
+    setters.reset_observer(self)
+
     self.fov = 15*u.arcmin
-    self.time_var = Time.now() 
+    self.time_var = dt.datetime.now(tz = self.obs_timezone) 
     self.use_curr_time = True
 
     # Init
     init_tab_one(self)
     init_tab_two(self)
     init_tab_three(self)
+    init_tab_four(self)
 
     info = "Program time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates RA:\nCoordinates DEC:\nMagnitude V:\n\nRises:\nSets:\n\n\nMaximum altitude:\nMinimum altitude:\n\nAltitude:\nAzimuth:\n"
     self.tab1.label_info.setText(info)   
@@ -249,13 +273,6 @@ def init_tab_three(self):
     self.tab3.dec_input_button = QPushButton("Change Declination")
     self.tab3.dec_input_button.clicked.connect(lambda: setters.change_dec(self))
 
-    self.tab3.time_input = QLineEdit()
-    self.tab3.time_input_button = QPushButton("Change time (YYYY-MM-DD HH:MM:SS)")
-    self.tab3.time_input_button.clicked.connect(lambda: setters.change_time(self))
-
-    self.tab3.now_button = QPushButton("Use current time")
-    self.tab3.now_button.clicked.connect(lambda: setters.use_now_time(self))
-
     self.tab3.plot_button = QPushButton("Plot")
     self.tab3.plot_button.clicked.connect(lambda: plots.plot_coords(self, self.tab3))
 
@@ -273,15 +290,102 @@ def init_tab_three(self):
     self.tab3.layout.addWidget(self.tab3.ra_input_button)
     self.tab3.layout.addWidget(self.tab3.dec_input)
     self.tab3.layout.addWidget(self.tab3.dec_input_button)
-    self.tab3.layout.addWidget(self.tab3.time_input)
-    self.tab3.layout.addWidget(self.tab3.time_input_button)
-    self.tab3.layout.addWidget(self.tab3.now_button)
     self.tab3.layout.addWidget(self.tab3.plot_button)
     self.tab3.layout.addWidget(self.tab3.plot_airmass_button)
     self.tab3.layout.addWidget(self.tab3.get_info_button)
     self.tab3.layout.addWidget(self.tab3.label_info)
 
     self.tab3.setLayout(self.tab3.layout)
+
+def init_tab_four(self):
+    self.tab4.timezones = [
+        "UTC - Coordinated Universal Time (UTC)",
+        "ET - US/Eastern (UTC-5/UTC-4)",
+        "CT - US/Central (UTC-6/UTC-5)",
+        "MT - US/Mountain (UTC-7/UTC-6)",
+        "PT - US/Pacific (UTC-8/UTC-7)",
+        "HT - US/Hawaii (UTC-9/UTC-10)",
+        "ST - US/Samoa (UTC-11)",
+        "MT - US/Arizona (UTC-7/UTC-6)",
+        "CLT - America/Santiago (UTC-4/UTC-3)",
+        "GMT - Europe/London (UTC+0/UTC+1)",
+        "CET - Europe/Zurich (UTC+1/UTC+2)",
+        "EET - Europe/Athens (UTC+2/UTC+3)",
+        "MSK - Europe/Moscow (UTC+3)",
+        "WET - Atlantic/Canary (UTC+0/UTC+1)",
+        "WAT - Africa/Bangui (UTC+1)",
+        "CAT - Africa/Lusaka (UTC+2)",
+        "SAST - Africa/Johannesburg (UTC+2)",
+        "EAT - Africa/Djibouti (UTC+3)",
+        "PKT - Asia/Karachi (UTC+5)",
+        "IST - Asia/Calcutta (UTC+5:30)",
+        "+06 - Asia/Dacca (UTC+6)",
+        "+07 - Asia/Bangkok (UTC+7)",
+        "AWST - Australia/Perth (UTC+8)",
+        "JST - Japan (UTC+9)",
+        "ACT - Australia/South (UTC+9:30/UTC+10:30)",
+        "AET - Australia/Canberra (UTC+10/UTC+11)",
+        "NZT - NZ (UTC+12/UTC+13)"
+    ]
+
+    self.tab4.time_input = QLineEdit()
+    self.tab4.time_input_button = QPushButton("Change time (YYYY-MM-DD HH:MM:SS)")
+    self.tab4.time_input_button.clicked.connect(lambda: setters.change_time(self))
+
+    self.tab4.now_button = QPushButton("Use current time")
+    self.tab4.now_button.clicked.connect(lambda: setters.use_now_time(self))
+
+    self.tab4.obs_lat_input = QLineEdit()
+    self.tab4.obs_lat_input_button = QPushButton("Change observer latitude (degrees)")
+    self.tab4.obs_lat_input_button.clicked.connect(lambda: setters.change_lat(self))
+
+    self.tab4.obs_lon_input = QLineEdit()
+    self.tab4.obs_lon_input_button = QPushButton("Change observer longitude (degrees)")
+    self.tab4.obs_lon_input_button.clicked.connect(lambda: setters.change_lon(self))
+
+    self.tab4.obs_height_input = QLineEdit()
+    self.tab4.obs_height_input_button = QPushButton("Change observer height (meters)")
+    self.tab4.obs_height_input_button.clicked.connect(lambda: setters.change_height(self))
+
+    self.tab4.obs_timezone_dropdown = QComboBox()
+    self.tab4.obs_timezone_dropdown.setEditable(True)
+    self.tab4.obs_timezone_dropdown.addItems(self.tab4.timezones)
+    self.tab4.obs_timezone_dropdown_button = QPushButton("Change observer timezone")
+    self.tab4.obs_timezone_dropdown_button.clicked.connect(lambda: setters.change_timezone(self))
+
+    self.tab4.obs_name_input = QLineEdit()
+    self.tab4.obs_name_input_button = QPushButton("Change observer name")
+    self.tab4.obs_name_input_button.clicked.connect(lambda: setters.change_name(self))
+
+    self.tab4.obs_reset_input_button = QPushButton("Reset observer to default")
+    self.tab4.obs_reset_input_button.clicked.connect(lambda: setters.reset_observer_with_message(self))
+
+    self.tab4.label_info = QLabel()
+    self.tab4.label_info.setGeometry(200, 200, 200, 30)
+    self.tab4.label_info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+
+    # Entire tab layout
+    self.tab4.layout = QVBoxLayout()
+
+    self.tab4.layout.addWidget(self.tab4.time_input)
+    self.tab4.layout.addWidget(self.tab4.time_input_button)
+    self.tab4.layout.addWidget(self.tab4.now_button)
+    self.tab4.layout.addWidget(self.tab4.obs_lat_input)
+    self.tab4.layout.addWidget(self.tab4.obs_lat_input_button)
+    self.tab4.layout.addWidget(self.tab4.obs_lon_input)
+    self.tab4.layout.addWidget(self.tab4.obs_lon_input_button)
+    self.tab4.layout.addWidget(self.tab4.obs_height_input)
+    self.tab4.layout.addWidget(self.tab4.obs_height_input_button)
+    self.tab4.layout.addWidget(self.tab4.obs_timezone_dropdown)
+    self.tab4.layout.addWidget(self.tab4.obs_timezone_dropdown_button)
+    self.tab4.layout.addWidget(self.tab4.obs_name_input)
+    self.tab4.layout.addWidget(self.tab4.obs_name_input_button)
+    self.tab4.layout.addWidget(self.tab4.obs_reset_input_button)
+    self.tab4.layout.addWidget(self.tab4.label_info)
+
+    self.tab4.setLayout(self.tab4.layout)
+
+    printers.get_obs_info(self)
 
 
 # Open csv file 
@@ -317,7 +421,7 @@ def init_tab1_target_names(self, temp_target_names):
     self.tab1.targets = []
     self.tab1.mags = []
 
-    now = Time.now()
+    now = dt.datetime.now(tz=self.obs_timezone)
     for star in temp_target_names:
         try:
             star = helpers.clip_name(star)
@@ -327,12 +431,12 @@ def init_tab1_target_names(self, temp_target_names):
         except(NameResolveError):
             continue
         try:
-            if RHO.target_is_up(now, curr_target):
+            if OBS.target_is_up(now, curr_target):
                 self.tab1.target_names.append(star + " (Up)")       # So user can see if a given object is in the sky
                 self.tab1.up_target_names.append(star)
             else:
                 self.tab1.target_names.append(star)
-        except (exceptions.LargeQueryWarning, ReadTimeout, TimeoutError, IERSWarning):
+        except (exceptions.LargeQueryWarning, ReadTimeout, TimeoutError, IERSWarning, DALFormatError):
             setters.set_default(self, self.tab1, "Download timed out, please try again.")
             return
 
@@ -350,14 +454,14 @@ def init_tab2_target_names(self):
         self.tab2.targets[:] = []
 
     # Declare var as default to Now
-    time_var_to_jd = Time.now()
+    time_var_sec = dt.datetime.now(tz = self.obs_timezone)
     
     # If not using current time, however, use set date time
     if not self.use_curr_time:
-        time_var_to_jd = self.time_var
+        time_var_sec = self.time_var
 
     # Convert either now time or set time to jd for comparison purposes
-    time_var_to_jd = time_var_to_jd.to_value('jd', 'float')
+    time_var_sec = Time(time_var_sec).to_value('cxcsec', 'float')
 
     for i in range(self.tab2.sheet_index, self.tab2.sheet_index_end):
         try: 
@@ -372,7 +476,7 @@ def init_tab2_target_names(self):
             obs_win_close_sec = obs_win_close.to_value('cxcsec' ,'float') + 43200
 
             # Compare window to see if obs window currently open
-            if obs_win_open_sec < time_var_to_jd and obs_win_close_sec < time_var_to_jd:
+            if obs_win_open_sec < time_var_sec and obs_win_close_sec < time_var_sec:
                 continue
 
             curr_target = FixedTarget(coordinates.SkyCoord.from_name(name), name=name)

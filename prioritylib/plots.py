@@ -71,12 +71,12 @@ def airmass_plot(self, tab):
         title_2 = helpers.clip_name(tab.current_target_name) + " Airmass Plot"
 
     if self.use_curr_time:
-        self.time_var = Time.now()                                # Update time If needed
+        self.time_var = dt.datetime.now(self.obs_timezone)                                # Update time If needed
     try: 
         figure = plt.figure(figsize=(8, 6))
         ax = plot_airmass(tab.current_target, 
-                            observer=RHO, 
-                            time=self.time_var.to_datetime(timezone=RHO.timezone), 
+                            observer=OBS, 
+                            time=self.time_var.to_datetime(timezone=OBS.timezone), 
                             use_local_tz=True,
                             brightness_shading=True)
         ax.set_title(title)

@@ -236,6 +236,19 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 -added circumpolar vs. never rises distinguisher for ALL info printers (had only added to one before)
 -fixed minimum altitude
 
+12/6/2024
+-windows import has been isolated (i.e., won't interrupt other OS's trying to run it)
+-more specific error message for consolidate submissions (specifically column mismatch)
+-finished (hopefully) observing signup w/ shifts
+
+12/7/2024
+-admin/target submission: prevented people from having obs windows that close before they ever open, and prevented ppl from submitting targets that have already expired
+
+12/8/2024
+-priority: added fourth tab (Observer values) with customizable values for latitude, longitude, time zone, obs name, height, moved time from third tab to fourth tab
+-> SO SO SO SO much time zones shenanigans...............
+-": added DAL error catching (idk what causes this error...)
+
 ----------------------------------
 
 priority todo:
@@ -248,9 +261,6 @@ priority todo:
 -add added targets to sheet (I don't remember what this means...............)
 -add .exe file to run planning.py
 -glitch w changing time altitude for HD 219134 (??? cant replicate)
-
-admin todo:
--first/second shifts on observing nights?
 
 manual:
 -star mag -> exposure time + filter(?)

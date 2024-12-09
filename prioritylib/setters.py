@@ -1,6 +1,8 @@
 from lib import *
 from prioritylib.global_ import *
 import prioritylib.initwin as initwin
+import prioritylib.printers as printers
+import prioritylib.helpers as helpers
 
 # Change FOV to user input
 def change_fov(self):
@@ -10,7 +12,7 @@ def change_fov(self):
         if (new_fov > 0):
             self.fov = new_fov * u.arcmin
             update = "Successfully updated FOV to " + str(self.fov) + "."
-    except (ValueError):
+    except (ValueError, TypeError):
         pass
     self.tab3.label_info.setText(update)
 
@@ -26,7 +28,7 @@ def change_ra(self):
         self.tab3.ra = new_ra
         self.tab3.current_target = FixedTarget(self.tab3.coords, name="Custom Coordinates Plot")
         update = "Updated RA to " + str(self.tab3.ra) + ".\nCoordinates are now " + self.tab3.coords.to_string(style="hmsdms", sep=":", precision=1) + "."
-    except (ValueError):
+    except (ValueError, TypeError):
         pass
     self.tab3.label_info.setText(update)
 
@@ -42,36 +44,176 @@ def change_dec(self):
         self.tab3.dec = new_dec
         self.tab3.current_target = FixedTarget(self.tab3.coords, name="Custom Coordinates Plot")
         update = "Updated Dec to " + str(self.tab3.dec) + ".\nCoordinates are now " + self.tab3.coords.to_string(style="hmsdms", sep=":", precision=1) + "."
-    except (ValueError):
+    except (ValueError, TypeError):
         pass
     self.tab3.label_info.setText(update)
 
 # Change time to user input, resulting in a static datetime
 def change_time(self):
-    update = "Time could NOT be updated.\nEnsure that the value entered matches a valid format \n(e.g., 2024-12-20 10:00:00)."
+    update = "Time could NOT be updated.\nEnsure that the value entered matches a valid format \n(e.g., 2024-12-20 02:12:02)."
     try:
-        new_time = self.tab3.time_input.text()
-        new_time = Time(new_time)
+        new_time = self.tab4.time_input.text()
+        new_time = parse(new_time)
+        new_time = self.obs_timezone.localize(new_time)
         self.time_var = new_time
         self.use_curr_time = False
         # If tab2 has sheet uploaded, re-check obs windows   
         if self.sheet is not None:
             reset_tab2(self)
-        update = "Updated time to " + str(self.time_var) + "."
-    except (ValueError):
+        time_arr = helpers.convert_time_to_string(self, self.time_var)
+        update = "Updated time to " + time_arr[0] + " " + time_arr[1] + "." + "\n\nCurrent info:" + printers.get_obs_info(self)
+    except (ValueError, TypeError):
         pass
     except (ErfaWarning):           # Apparently there is time shenanigans about using certain dates. So.
         update = "Time could NOT be updated; the date was too far in the future/past."
-    self.tab3.label_info.setText(update)
+    self.tab4.label_info.setText(update)
 
 # Reset bool to using (approx.) Now wherever applicable instead of a static datetime
 def use_now_time(self):
     self.use_curr_time = True
-    self.time_var = Time.now() 
+    temp_time = dt.datetime.now(self.obs_timezone)
+    self.time_var = temp_time
     # If tab2 has sheet uploaded, re-check obs windows   
     if self.sheet is not None:
         reset_tab2(self)
-    self.tab3.label_info.setText("Program will now use current time.\nIf applicable, submission targets have been reset.")
+    self.tab4.label_info.setText("Program will now use current time.\nIf applicable, submission targets have been reset." + "\n\nCurrent info:" + printers.get_obs_info(self))
+
+# Change longitude of observer
+def change_lon(self):
+    update = "Longitude could NOT be updated.\nEnsure that the value entered matches a valid format \n(e.g., 29.004)."
+    try:
+        new_lon = self.tab4.obs_lon_input.text()
+        lon_float = float(new_lon)
+        new_obs = Observer(
+            location=coordinates.EarthLocation(lat=self.obs_lat * u.deg, lon=lon_float * u.deg, height=self.obs_height * u.m),
+            timezone=self.obs_timezone,
+            name=self.obs_name
+        )
+        OBS = new_obs
+        self.obs_lon = lon_float
+        update = "Updated longitude to " + str(self.obs_lon) + "." + "\n\nCurrent info:" + printers.get_obs_info(self)
+    except(ValueError, TypeError):
+        pass
+    self.tab4.label_info.setText(update)
+
+    # If tab2 has sheet uploaded, re-check obs windows   
+    if self.sheet is not None:
+        reset_tab2(self)
+
+# Change latitude of observer
+def change_lat(self):
+    update = "Latitude could NOT be updated.\nEnsure that the value entered matches a valid format \n(e.g., -82.58)."
+    try:
+        new_lat = self.tab4.obs_lat_input.text()
+        lat_float = float(new_lat)
+        new_obs = Observer(
+            location=coordinates.EarthLocation(lat=lat_float * u.deg, lon=self.obs_lon * u.deg, height=self.obs_height * u.m),
+            timezone=self.obs_timezone,
+            name=self.obs_name
+        )
+        OBS = new_obs
+        self.obs_lat = lat_float
+        # ^ this is AFTER attempt to define observer so the value is ensured correct
+        update = "Updated latitude to " + str(self.obs_lat) + "." + "\n\nCurrent info:" + printers.get_obs_info(self)
+    except(ValueError, TypeError):
+        pass
+    self.tab4.label_info.setText(update)
+
+    # If tab2 has sheet uploaded, re-check obs windows   
+    if self.sheet is not None:
+        reset_tab2(self)
+
+# Change timezone of observer and update time accordingly
+def change_timezone(self):
+    update = "Time zone could NOT be updated.\nEnsure that the value entered matches a valid format according to tz database time zones \n(e.g., 'US/Eastern')."
+    try:
+        new_tz = self.tab4.obs_timezone_dropdown.currentText()
+        new_tz = new_tz.split("- ")[1]
+        new_tz = new_tz.split(" (")[0]      # Get timezone Name by itself (excludes acronym and UTC value)
+        if (new_tz == "Coordinated Universal Time"):
+            new_tz = "UTC"
+        new_obs = Observer(
+            location=coordinates.EarthLocation(lat=self.obs_lat * u.deg, lon=self.obs_lon * u.deg, height=self.obs_height * u.m),
+            timezone=new_tz,
+            name=self.obs_name
+        )
+        OBS = new_obs
+        old_tz = self.obs_timezone
+        new_tz = pytz.timezone(new_tz)
+        self.obs_timezone = new_tz
+
+        # Refresh Now time     
+        if self.use_curr_time:
+            self.time_var = dt.datetime.now(self.obs_timezone)
+        else:
+            # If not using Now, translate entered time to new timezone
+            new_time = self.time_var.astimezone(self.obs_timezone)
+            self.time_var = new_time
+
+        time_arr = helpers.convert_time_to_string(self, self.time_var)
+        update = "Updated timezone to " + str(self.obs_timezone) + " and time to " + time_arr[0] + " " + time_arr[1] + "." + "\n\nCurrent info:" + printers.get_obs_info(self)
+    except(ValueError, TypeError, UnknownTimeZoneError):
+        pass
+    self.tab4.label_info.setText(update)
+
+    # If tab2 has sheet uploaded, re-check obs windows   
+    if self.sheet is not None:
+        reset_tab2(self)
+
+# Change name of observer - I don't believe this has any functional repercussions
+def change_name(self):
+    update = "Name could NOT be updated.\nEnsure that a value was entered."
+    try:
+        new_name = self.tab4.obs_name_input.text()
+        new_obs = Observer(
+            location=coordinates.EarthLocation(lat=self.obs_lat * u.deg, lon=self.obs_lon * u.deg, height=self.obs_height * u.m),
+            timezone=self.obs_timezone,
+            name=new_name
+        )
+        OBS = new_obs
+        self.obs_name = new_name
+        update = "Updated name to " + str(self.obs_name) + "." + "\n\nCurrent info:" + printers.get_obs_info(self)
+    except(ValueError, TypeError):
+        pass
+    self.tab4.label_info.setText(update)
+
+# Change altitude of observer
+def change_height(self):
+    update = "Height could NOT be updated.\nEnsure that the value entered matches a valid format \n(e.g., 23)."
+    try:
+        new_height = self.tab4.obs_height_input.text()
+        height_float = float(new_height)
+        new_obs = Observer(
+            location=coordinates.EarthLocation(lat=self.obs_lat * u.deg, lon=self.obs_lon * u.deg, height=height_float * u.m),
+            timezone=self.obs_timezone,
+            name=self.obs_name
+        )
+        OBS = new_obs
+        self.obs_height = height_float
+        update = "Updated height to " + str(self.obs_height) + "." + "\n\nCurrent info:" + printers.get_obs_info(self)
+    except(ValueError, TypeError):
+        pass
+    self.tab4.label_info.setText(update)
+
+# Called when USER resets observer 
+def reset_observer_with_message(self):
+    reset_observer(self)
+    print_info = "Observer has been reset to defaults (Rosemary Hill Observatory)." + "\n\nCurrent info:" + printers.get_obs_info(self)
+    self.tab4.label_info.setText(print_info)
+
+# Called when PROGRAM (re)sets observer (e.g., at beginning of runtime)
+def reset_observer(self):
+    self.obs_lat = float(DEF_LATITUDE)
+    self.obs_lon = float(DEF_LONGITUDE)
+    self.obs_height = float(DEF_HEIGHT)
+    self.obs_timezone = pytz.timezone(str(DEF_TIMEZONE))
+    self.obs_name = str(DEF_NAME)
+
+    OBS = Observer(
+        location=coordinates.EarthLocation(lat=DEF_LATITUDE * u.deg, lon=DEF_LONGITUDE * u.deg, height=DEF_HEIGHT * u.m),
+        timezone=DEF_TIMEZONE,
+        name=DEF_NAME
+    )
 
 # Failure condition, set to defaults
 def set_default(self, tab, msg):           

@@ -18,7 +18,7 @@ def get_info_of_obj(self, tab):
         result_table = Simbad.query_object(helpers.clip_name(tab.current_target_name))[["main_id", "ra", "dec", "V"]]
         tab.result_table = result_table
         tab.coords = SkyCoord(ra=result_table["ra"], dec=result_table["dec"])
-    except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError, AttributeError):
+    except (NoResultsWarning, NameResolveError, DALFormatError, DALAccessError, DALServiceError, DALQueryError, DALOverflowWarning, AttributeError):
         if tab is self.tab2:
             print_csv_target(self)
         else:
@@ -42,12 +42,12 @@ def get_info_of_obj(self, tab):
         coords_dec = tab.result_table["dec"]
 
     # Idk what to say abt this, sometimes the true/false comes like [True] and other times it comes like True. I don't get it .
-    up_now = str(RHO.target_is_up(self.time_var, tab.current_target))
+    up_now = str(OBS.target_is_up(self.time_var, tab.current_target))
     if "[" in up_now:
         up_now = up_now.split("[")[1]
         up_now = up_now.split("]")[0]
 
-    alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=RHO.location))
+    alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=OBS.location))
     str_alt = str(alt_az.alt)[1:-8] 
     if "s" not in str_alt:
         str_alt += "s"
@@ -57,7 +57,7 @@ def get_info_of_obj(self, tab):
     
     # Gather relevant info
     str_info = ""
-    prog_time = helpers.eastern(self, self.time_var, False)
+    prog_time = helpers.convert_time_to_string(self, self.time_var)
     str_info += "Program time: " + prog_time[0] + " " + prog_time[1] + "\n\n"
     str_info += "Name: " + helpers.clip_name(tab.current_target_name) + "\n"
     str_info += "Identifier: " + info[0] + "\n"
@@ -73,18 +73,18 @@ def get_info_of_obj(self, tab):
     if (isinstance(dec_num, list)):
         dec_num = dec_num[0]
     dec_num = float(dec_num.split(' ')[1])
-    max_alt = 90 - RHO_LAT + dec_num
+    max_alt = 90 - self.obs_lat + dec_num
     if max_alt > 90:
         max_alt = abs(max_alt - 180)
-    min_alt = RHO_LAT - (90 - dec_num)
+    min_alt = self.obs_lat - (90 - dec_num)
 
     try: 
-        rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
+        rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=tab.current_target))[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=tab.current_target))[1]]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
         str_info += "Sets: " + rise_set[1] + " EST" + "\n"
         if "true" in up_now.lower():
-            diff_rise = abs(self.time_var - RHO.target_rise_time(time=self.time_var, target=tab.current_target))
-            diff_set = abs(self.time_var - RHO.target_set_time(time=self.time_var, target=tab.current_target))
+            diff_rise = abs(Time(self.time_var) - OBS.target_rise_time(time=self.time_var, target=tab.current_target))
+            diff_set = abs(Time(self.time_var) - OBS.target_set_time(time=self.time_var, target=tab.current_target))
             if diff_rise > diff_set:
                 str_info += "Currently setting\n\n" 
             else:
@@ -136,15 +136,15 @@ def print_csv_target(self):
             # This is here for aesthetic purposes in print - makes more sense to have the rise/set time, up status, etc Before observing info
             # Makes sense chronologically for the code Below 
             if PRETTY_COLUMNS[index] == "\nB Filter":
-                prog_time = helpers.eastern(self, self.time_var, False)
+                prog_time = helpers.convert_time_to_string(self, self.time_var)
                 str_info += "Program time: " + prog_time[0] + " " + prog_time[1] + "\n\n"
-                up_now = str(RHO.target_is_up(self.time_var, self.tab2.current_target))
+                up_now = str(OBS.target_is_up(self.time_var, self.tab2.current_target))
                 if "[" in up_now:
                     up_now = up_now.split("[")[1]
                     up_now = up_now.split("]")[0]
                 str_info += "Up now: " + up_now + "\n"
 
-                alt_az = self.tab2.coords.transform_to(AltAz(obstime=self.time_var, location=RHO.location))
+                alt_az = self.tab2.coords.transform_to(AltAz(obstime=self.time_var, location=OBS.location))
                 str_alt = str(alt_az.alt)[0:-7] 
                 if "s" not in str_alt:
                     str_alt += "s"
@@ -157,18 +157,18 @@ def print_csv_target(self):
                 if (isinstance(dec_num, list)):
                     dec_num = dec_num[0]
                 dec_num = float(dec_num.split(' ')[1])
-                max_alt = 90 - RHO_LAT + dec_num
+                max_alt = 90 - self.obs_lat + dec_num
                 if max_alt > 90:
                     max_alt = abs(max_alt - 180)
-                min_alt = RHO_LAT - (90 - dec_num)
+                min_alt = self.obs_lat - (90 - dec_num)
 
                 try: 
-                    rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=self.tab2.current_target), True)[1]]
+                    rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=self.tab2.current_target))[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=self.tab2.current_target))[1]]
                     str_info += "Rises: " + rise_set[0] + " EST" + "\n"
                     str_info += "Sets: " + rise_set[1] + " EST" + "\n"
                     if "true" in up_now.lower():
-                        diff_rise = abs(self.time_var - RHO.target_rise_time(time=self.time_var, target=self.tab2.current_target))
-                        diff_set = abs(self.time_var - RHO.target_set_time(time=self.time_var, target=self.tab2.current_target))
+                        diff_rise = abs(Time(self.time_var) - OBS.target_rise_time(time=self.time_var, target=self.tab2.current_target))
+                        diff_set = abs(Time(self.time_var) - OBS.target_set_time(time=self.time_var, target=self.tab2.current_target))
                         if diff_rise > diff_set:
                             str_info += "Currently setting\n\n" 
                         else:
@@ -205,12 +205,12 @@ def print_csv_target(self):
     self.tab2.label_info.setText(str_info)
 
 def tab3_print(self, tab):
-    up_now = str(RHO.target_is_up(self.time_var, tab.current_target))
+    up_now = str(OBS.target_is_up(self.time_var, tab.current_target))
     if "[" in up_now:
         up_now = up_now.split("[")[1]
         up_now = up_now.split("]")[0]
 
-    alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=RHO.location))
+    alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=OBS.location))
     str_alt = str(alt_az.alt)[1:-8] 
     if "s" not in str_alt:
         str_alt += "s"
@@ -220,7 +220,7 @@ def tab3_print(self, tab):
     
     # Gather relevant info
     str_info = ""
-    prog_time = helpers.eastern(self, self.time_var, False)
+    prog_time = helpers.convert_time_to_string(self, self.time_var)
     str_info += "Program time: " + prog_time[0] + " " + prog_time[1] + "\n\n"
     str_info += "Up now: " + up_now + "\n\n"
     str_info += "Coordinates RA: " + tab.ra + "\n"
@@ -230,18 +230,18 @@ def tab3_print(self, tab):
     if (isinstance(dec_num, list)):
         dec_num = dec_num[0]
     dec_num = float(dec_num.split(' ')[1])
-    max_alt = 90 - RHO_LAT + dec_num
+    max_alt = 90 - self.obs_lat + dec_num
     if max_alt > 90:
         max_alt = abs(max_alt - 180)
-    min_alt = RHO_LAT - (90 - dec_num)
+    min_alt = self.obs_lat - (90 - dec_num)
 
     try: 
-        rise_set = [helpers.eastern(self, RHO.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.eastern(self, RHO.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
+        rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=tab.current_target))[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=tab.current_target))[1]]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
         str_info += "Sets: " + rise_set[1] + " EST" + "\n"
         if "true" in up_now.lower():
-            diff_rise = abs(self.time_var - RHO.target_rise_time(time=self.time_var, target=tab.current_target))
-            diff_set = abs(self.time_var - RHO.target_set_time(time=self.time_var, target=tab.current_target))
+            diff_rise = abs(Time(self.time_var) - OBS.target_rise_time(time=self.time_var, target=tab.current_target))
+            diff_set = abs(Time(self.time_var) - OBS.target_set_time(time=self.time_var, target=tab.current_target))
             if diff_rise > diff_set:
                 str_info += "Currently setting\n\n" 
             else:
@@ -269,3 +269,8 @@ def tab3_print(self, tab):
 
     # Set label as the string info
     tab.label_info.setText(str_info)
+
+def get_obs_info(self):
+    time_arr = helpers.convert_time_to_string(self, self.time_var)
+    str_msg = "\nTime: " + time_arr[0] + " " + time_arr[1] + "\nLatitude: " + str(self.obs_lat) + " degrees" + "\nLongitude: " + str(self.obs_lon) + " degrees" + "\nHeight: " + str(self.obs_height) + " meters" + "\nTimezone: " + str(self.obs_timezone) + "\nName: " + str(self.obs_name)
+    return str_msg

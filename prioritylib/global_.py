@@ -1,12 +1,18 @@
 import astropy.coordinates as coordinates
 from astroplan import Observer
 from astropy import units as u
+import pytz
 
-RHO_LAT = 29.4001
-RHO = Observer(
-    location=coordinates.EarthLocation(lat=RHO_LAT, lon=-82.5862*u.deg, height=23*u.m),
-    timezone='US/Eastern',
-    name='Rosemary Hill Observatory'
+DEF_LATITUDE = 29.4001          # (degrees)
+DEF_LONGITUDE = -82.5862        # (degrees)
+DEF_HEIGHT = 23                 # (meters)
+DEF_TIMEZONE = pytz.timezone('US/Eastern')
+DEF_NAME = 'Rosemary Hill Observatory'
+# Defines obs initially as Rosemary Hill Observatory
+OBS = Observer(
+    location=coordinates.EarthLocation(lat=DEF_LATITUDE * u.deg, lon=DEF_LONGITUDE * u.deg, height=DEF_HEIGHT * u.m),
+    timezone=DEF_TIMEZONE,
+    name=DEF_NAME
 )
 
 
