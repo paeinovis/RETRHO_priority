@@ -297,6 +297,8 @@ def init_tab_three(self):
 
     self.tab3.setLayout(self.tab3.layout)
 
+    self.tab3.label_info.setText(printers.get_tab_three_info(self))
+
 def init_tab_four(self):
     self.tab4.timezones = [
         "UTC - Coordinated Universal Time (UTC)",
@@ -385,8 +387,7 @@ def init_tab_four(self):
 
     self.tab4.setLayout(self.tab4.layout)
 
-    printers.get_obs_info(self)
-
+    setters.reset_observer_with_message(self)
 
 # Open csv file 
 def open_file_dialog(self):                       # Function from https://pythonspot.com/pyqt5-file-dialog/

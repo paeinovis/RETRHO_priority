@@ -205,6 +205,9 @@ def print_csv_target(self):
     self.tab2.label_info.setText(str_info)
 
 def tab3_print(self, tab):
+    if self.use_curr_time:
+        self.time_var = dt.datetime.now(self.obs_timezone)                    # Update time If Needed
+
     up_now = str(OBS.target_is_up(self.time_var, tab.current_target))
     if "[" in up_now:
         up_now = up_now.split("[")[1]
@@ -271,6 +274,16 @@ def tab3_print(self, tab):
     tab.label_info.setText(str_info)
 
 def get_obs_info(self):
+    if self.use_curr_time:
+        self.time_var = dt.datetime.now(self.obs_timezone)                    # Update time If Needed
+
     time_arr = helpers.convert_time_to_string(self, self.time_var)
-    str_msg = "\nTime: " + time_arr[0] + " " + time_arr[1] + "\nLatitude: " + str(self.obs_lat) + " degrees" + "\nLongitude: " + str(self.obs_lon) + " degrees" + "\nHeight: " + str(self.obs_height) + " meters" + "\nTimezone: " + str(self.obs_timezone) + "\nName: " + str(self.obs_name)
+    str_msg = "\nTime: " + time_arr[0] + " " + time_arr[1] + "\n\nLatitude: " + str(self.obs_lat) + " degrees" + "\nLongitude: " + str(self.obs_lon) + " degrees" + "\nHeight: " + str(self.obs_height) + " meters" + "\n\nTimezone: " + str(self.obs_timezone) + "\n\nName: " + str(self.obs_name)
+    return str_msg
+
+def get_tab_three_info(self):
+    if self.use_curr_time:
+        self.time_var = dt.datetime.now(self.obs_timezone)                    # Update time If Needed
+    time_arr = helpers.convert_time_to_string(self, self.time_var)
+    str_msg = "\nTime: " + time_arr[0] + " " + time_arr[1] + "\n\nField of view: " + str(self.fov / u.arcmin) + " arcminutes" + "\n\nRA: " + str(self.tab3.ra) + "\nDec: " + str(self.tab3.dec) + "\n\nCurrent target name: " + str(self.tab3.current_target_name) + "\n\nTimezone: " + str(self.obs_timezone)
     return str_msg
