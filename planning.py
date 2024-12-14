@@ -4,7 +4,7 @@ import prioritylib.initwin as initwin
 app = QApplication(sys.argv)
 
 try:
-    Simbad.add_votable_fields("U", "V", "B")
+    Simbad.add_votable_fields()
 except (DALAccessError, DALServiceError, DALFormatError):
     popup = initwin.PopupWindow()
     initwin.DAL_error(popup)

@@ -46,7 +46,7 @@ def DAL_error(self):
     self.label.setText("There is a DAL Service Error preventing the program from connecting.\nPlease ensure you are connected to the Internet.")
 
 def pyvo_error(self):
-    self.label.setText("There is a pyvo error (E10) preventing the program from connecting.\nPlease ensure you are connected to the Internet.")
+    self.label.setText("There is a pyvo error (E10) preventing the program from connecting.")
 
 def shutdown():
     exit(1)
