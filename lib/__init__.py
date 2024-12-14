@@ -31,6 +31,7 @@ warnings.filterwarnings("error")
 warnings.filterwarnings("ignore", message="The plot_date function was deprecated in Matplotlib 3.9 and will be removed in 3.11. Use plot instead.")
 from astroplan import FixedTarget, Observer, TargetAlwaysUpWarning, TargetNeverUpWarning
 from pyvo.dal.exceptions import DALFormatError, DALAccessError, DALServiceError, DALQueryError, DALOverflowWarning
+from pyvo.io.vosi.exceptions import E10
 from astropy.utils import iers
 from astropy.utils.iers import IERSWarning
 from pytz import UnknownTimeZoneError

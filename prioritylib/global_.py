@@ -47,7 +47,7 @@ COLUMNS = [NAME, SEC_NAME, RA, DEC, MAG_V, MAG_B,
 
 PRETTY_COLUMNS = ["Name", "Secondary Name", "\nRA", "Dec", "\nV Magnitude", "B Magnitude",
                   "\nObs. window opens", "Obs. window closes", "Priority",
-                  "\nB Filter", "G Filter", "R Filter", "I Filter", "Z Filter", "H-alpha Filter", "O III Filter", "S II Filter",
+                  "\nB Filter", "g Filter", "r Filter", "i Filter", "z Filter", "H-alpha Filter", "O III Filter", "S II Filter",
                   "\nBaseline", "\nObservation procedures", "\nScientific Justification", "\nNotes"]
 
 SORT_NAMES_1 = ["Brightest", "Dimmest"]

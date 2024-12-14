@@ -247,7 +247,12 @@ dec updated w/ decimal: ^(\+|\-)?([0-8][0-9])(:|\s)[0-5][0-9](:|\s)[0-5][0-9]\.?
 12/8/2024
 -priority: added fourth tab (Observer values) with customizable values for latitude, longitude, time zone, obs name, height, moved time from third tab to fourth tab
 -> SO SO SO SO much time zones shenanigans...............
--": added DAL error catching (idk what causes this error...)
+-": added DAL error catching (idk what causes this error... bad connection?)
+-added "current information" to third and fourth tabs so folks can see what's going on in each of them
+
+12/13/2024
+-priority: ideally resolved some bugs but . can't test rn :(
+-": added PYVO error catching (idk what causes this error... simbad?)
 
 ----------------------------------
 

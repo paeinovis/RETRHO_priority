@@ -10,6 +10,12 @@ except (DALAccessError, DALServiceError, DALFormatError):
     initwin.DAL_error(popup)
     popup.show()
     app.exec_()
+except (E10):
+    popup = initwin.PopupWindow()
+    initwin.pyvo_error(popup)
+    popup.show()
+    app.exec_()
+
 
 w = initwin.MainWindow()
 w.show()
@@ -17,4 +23,4 @@ app.exec_()
 
 
 # Authors: Pae Swanson
-# Contributors: Cassidy Camera, Hannah Luft
+# Contributors: Meir Schochet, Cassidy Camera, Hannah Luft

@@ -76,7 +76,7 @@ def airmass_plot(self, tab):
         figure = plt.figure(figsize=(8, 6))
         ax = plot_airmass(tab.current_target, 
                             observer=OBS, 
-                            time=self.time_var.to_datetime(timezone=OBS.timezone), 
+                            time=self.time_var, 
                             use_local_tz=True,
                             brightness_shading=True)
         ax.set_title(title)
