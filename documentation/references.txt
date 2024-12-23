@@ -17,3 +17,8 @@ https://stackoverflow.com/questions/9764298/given-parallel-lists-how-can-i-sort-
 https://stackoverflow.com/questions/21800169/python-pandas-get-index-of-rows-where-column-matches-certain-value
 https://www.geeksforgeeks.org/how-to-set-icon-to-a-window-in-pyqt5/
 https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
+https://realpython.com/python-csv/
+
+Observatory values taken in part from:
+https://github.com/astropy/astropy-data/blob/gh-pages/coordinates/sites.json
+https://asd.gsfc.nasa.gov/archive/idlastro/ftp/pro/astro/observatory.pro

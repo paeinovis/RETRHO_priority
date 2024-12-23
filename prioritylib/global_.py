@@ -2,6 +2,7 @@ import astropy.coordinates as coordinates
 from astroplan import Observer
 from astropy import units as u
 import pytz
+import csv
 
 DEF_LATITUDE = 29.4001          # (degrees)
 DEF_LONGITUDE = -82.5862        # (degrees)
@@ -14,7 +15,6 @@ OBS = Observer(
     timezone=DEF_TIMEZONE,
     name=DEF_NAME
 )
-
 
 # These must be manually updated if changes to the template are made !!!
 NAME = "Primary Identifier**"
@@ -52,3 +52,22 @@ PRETTY_COLUMNS = ["Name", "Secondary Name", "\nRA", "Dec", "\nV Magnitude", "B M
 
 SORT_NAMES_1 = ["Brightest", "Dimmest"]
 SORT_NAMES_2 = ["Brightest", "Dimmest", "Highest Priority"]
+
+OBSERVATORIES = [OBS]
+OBSERVATORIES_NAMES = [DEF_NAME]
+reader_obj = None
+
+try: 
+    with open('files/observatories.csv') as file_obj: 
+        reader_obj = csv.reader(file_obj) 
+        for row in reader_obj: 
+            try:
+                curr_obs = Observer(location=coordinates.EarthLocation(lat=float(row[1]) * u.deg, lon=float(row[2]) * u.deg, height=float(row[3]) * u.m),
+                timezone=pytz.timezone(row[4]),
+                name=row[0])
+                OBSERVATORIES.append(curr_obs)
+                OBSERVATORIES_NAMES.append(row[0])
+            except (ValueError, TypeError):
+                continue
+except (FileNotFoundError, ValueError, TypeError):
+    pass

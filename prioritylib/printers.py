@@ -176,8 +176,8 @@ def print_csv_target(self):
                     else:
                         str_info += "Currently below horizon\n\n"
 
-                    str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
-                    str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+                    str_info += f"Maximum altitude: {max_alt:.2f}\n"
+                    str_info += f"Minimum altitude: {min_alt:.2f}\n\n"
                 except (TargetNeverUpWarning):
                     str_info += "Rises: Does not rise\n"
                     str_info += "Sets: Does not set\n"
@@ -188,8 +188,8 @@ def print_csv_target(self):
                     str_info += "Rises: Does not rise\n"
                     str_info += "Sets: Does not set\n"
                     str_info += "Circumpolar\n\n"
-                    str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
-                    str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+                    str_info += f"Maximum altitude: {max_alt:.2f}\n"
+                    str_info += f"Minimum altitude: {min_alt:.2f}\n\n"
                 
                 str_info += "Altitude: " + str_alt + "\n"
                 str_info += "Azimuth: " + str_az + "\n"
@@ -278,7 +278,7 @@ def get_obs_info(self):
         self.time_var = dt.datetime.now(self.obs_timezone)                    # Update time If Needed
 
     time_arr = helpers.convert_time_to_string(self, self.time_var)
-    str_msg = "\nTime: " + time_arr[0] + " " + time_arr[1] + "\n\nLatitude: " + str(self.obs_lat) + " degrees" + "\nLongitude: " + str(self.obs_lon) + " degrees" + "\nHeight: " + str(self.obs_height) + " meters" + "\n\nTimezone: " + str(self.obs_timezone) + "\n\nName: " + str(self.obs_name)
+    str_msg = "\nTime: " + time_arr[0] + " " + time_arr[1] + f"\n\nLatitude: {self.obs_lat:.2f} degrees" + f"\nLongitude: {self.obs_lon:.2f} degrees" + f"\nHeight: {self.obs_height:.2f} meters" + "\n\nTimezone: " + str(self.obs_timezone) + "\n\nName: " + str(self.obs_name)
     return str_msg
 
 def get_tab_three_info(self):

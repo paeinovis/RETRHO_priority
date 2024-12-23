@@ -369,6 +369,11 @@ def init_tab_four(self):
     self.tab4.label_info.setGeometry(200, 200, 200, 30)
     self.tab4.label_info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
+    self.tab4.obs_list_dropdown = QComboBox()
+    self.tab4.obs_list_dropdown.addItems(OBSERVATORIES_NAMES)
+    self.tab4.obs_list_dropdown_button = QPushButton("Change observer values to predefined observatory")
+    self.tab4.obs_list_dropdown_button.clicked.connect(lambda: setters.set_observatory(self))
+
     # Entire tab layout
     self.tab4.layout = QVBoxLayout()
 
@@ -386,11 +391,13 @@ def init_tab_four(self):
     self.tab4.layout.addWidget(self.tab4.obs_name_input)
     self.tab4.layout.addWidget(self.tab4.obs_name_input_button)
     self.tab4.layout.addWidget(self.tab4.obs_reset_input_button)
+    self.tab4.layout.addWidget(self.tab4.obs_list_dropdown)
+    self.tab4.layout.addWidget(self.tab4.obs_list_dropdown_button)
     self.tab4.layout.addWidget(self.tab4.label_info)
 
     self.tab4.setLayout(self.tab4.layout)
 
-    setters.reset_observer_with_message(self)
+    setters.reset_observer_with_message(self)    
 
 # Open csv file 
 def open_file_dialog(self):                       # Function from https://pythonspot.com/pyqt5-file-dialog/
@@ -415,7 +422,6 @@ def open_file_dialog(self):                       # Function from https://python
     else:
         self.sheet = None
         setters.set_default(self, self.tab2, "Error parsing file.")
-
 
 # (Re)init tab1 values
 def init_tab1_target_names(self, temp_target_names):
@@ -448,7 +454,6 @@ def init_tab1_target_names(self, temp_target_names):
     self.tab1.current_target = self.tab1.targets[0]
     self.tab1.coords = self.tab1.current_target.coord
     helpers.determine_up(self.tab1.targets, self.tab1.target_names, self, self.tab1)
-
 
 # (Re)init tab2 values
 def init_tab2_target_names(self):

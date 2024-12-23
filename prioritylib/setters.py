@@ -238,3 +238,20 @@ def reset_tab2(self):
         else:                                                   # If only Up targets are being shown, add only up targets to dropdown
             self.tab2.targets_dropdown.addItems(self.tab2.up_target_names)
             self.tab2.current_target_name = self.tab2.up_target_names[0]
+
+def set_observatory(self):
+    update = "Observatory could not be updated." + "\n\nCurrent information" + printers.get_obs_info(self)
+    new_obs_name = self.tab4.obs_list_dropdown.currentText()
+    try:
+        index_of_name = OBSERVATORIES_NAMES.index(new_obs_name)
+        new_obs = OBSERVATORIES[index_of_name]
+        OBS = new_obs
+        self.obs_lat = float(OBS.latitude / u.deg)
+        self.obs_lon = float(OBS.longitude / u.deg)
+        self.obs_height = float(OBS.elevation / u.m)
+        self.obs_timezone = pytz.timezone(str(OBS.timezone))
+        self.obs_name = OBS.name
+        update = "Updated observatory to " + str(self.obs_name) + "." + "\n\nCurrent information" + printers.get_obs_info(self)
+    except(ValueError, KeyError):
+        pass
+    self.tab4.label_info.setText(update)
