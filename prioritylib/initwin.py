@@ -12,7 +12,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         init_window(self)
-        self.setWindowIcon(QIcon('retrhogo.png'))
+        self.setWindowIcon(QIcon('extra - retrhogo/retrhogo.png'))
     
     # Init secondary window(s) FIXME: presently not used - if this stays this way, delete
     def new_window(self):
