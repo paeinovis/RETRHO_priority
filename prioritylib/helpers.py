@@ -4,7 +4,11 @@ import prioritylib.setters as setters
 import prioritylib.helpers as helpers
 
 # Convert Time object to string according to timezone
-def convert_time_to_string(self, time):
+def convert_time_to_string(self, time, offset=False):
+    if offset:
+        utc_tz = pytz.timezone('UTC')
+        time = time.to_datetime(timezone=utc_tz)
+        time = time.astimezone(self.obs_timezone)
     hms = time.strftime('%H:%M:%S')
     day = time.strftime('%m/%d/%Y')
     return [day, hms]

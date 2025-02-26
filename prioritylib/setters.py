@@ -138,7 +138,6 @@ def change_timezone(self):
             name=self.obs_name
         )
         OBS = new_obs
-        old_tz = self.obs_timezone
         new_tz = pytz.timezone(new_tz)
         self.obs_timezone = new_tz
 

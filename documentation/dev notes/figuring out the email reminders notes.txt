@@ -1,0 +1,3 @@
+how 2 prevent double email on signup/reminder...
+
+-easier to check during reminder time, sort by obs dates - when Today = day, make a list, then run through the list and make sure not emailing twice (time should be closest so i++ to skip)

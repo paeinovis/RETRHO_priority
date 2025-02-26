@@ -79,7 +79,7 @@ def get_info_of_obj(self, tab):
     min_alt = self.obs_lat - (90 - dec_num)
 
     try: 
-        rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=tab.current_target))[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=tab.current_target))[1]]
+        rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
         str_info += "Sets: " + rise_set[1] + " EST" + "\n"
         if "true" in up_now.lower():
@@ -107,8 +107,8 @@ def get_info_of_obj(self, tab):
         str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
         str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
     
-    str_info += "Altitude: " + str_alt + "\n"
-    str_info += "Azimuth: " + str_az + "\n"
+    str_info += "Current altitude: " + str_alt + "\n"
+    str_info += "Current azimuth: " + str_az + "\n"
 
     # Set label as the string info
     tab.label_info.setText(str_info)
@@ -163,7 +163,7 @@ def print_csv_target(self):
                 min_alt = self.obs_lat - (90 - dec_num)
 
                 try: 
-                    rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=self.tab2.current_target))[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=self.tab2.current_target))[1]]
+                    rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=self.tab2.current_target), True)[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=self.tab2.current_target), True)[1]]
                     str_info += "Rises: " + rise_set[0] + " EST" + "\n"
                     str_info += "Sets: " + rise_set[1] + " EST" + "\n"
                     if "true" in up_now.lower():
@@ -191,8 +191,8 @@ def print_csv_target(self):
                     str_info += f"Maximum altitude: {max_alt:.2f}\n"
                     str_info += f"Minimum altitude: {min_alt:.2f}\n\n"
                 
-                str_info += "Altitude: " + str_alt + "\n"
-                str_info += "Azimuth: " + str_az + "\n"
+                str_info += "Current altitude: " + str_alt + "\n"
+                str_info += "Current azimuth: " + str_az + "\n"
 
             # Prints info from CSV per column 
             str_info += PRETTY_COLUMNS[index] + ": "      # Unfortunately, the Names of the columns are not easy to read. So PRETTY_COLUMNS are the stringified versions
@@ -214,10 +214,10 @@ def tab3_print(self, tab):
         up_now = up_now.split("]")[0]
 
     alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=OBS.location))
-    str_alt = str(alt_az.alt)[1:-8] 
+    str_alt = str(alt_az.alt)[0:-7] 
     if "s" not in str_alt:
         str_alt += "s"
-    str_az = str(alt_az.az)[1:-8]
+    str_az = str(alt_az.az)[0:-7]
     if "s" not in str_az:
         str_az += "s"
     
@@ -239,10 +239,11 @@ def tab3_print(self, tab):
     min_alt = self.obs_lat - (90 - dec_num)
 
     try: 
-        rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=tab.current_target))[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=tab.current_target))[1]]
+        rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
         str_info += "Rises: " + rise_set[0] + " EST" + "\n"
         str_info += "Sets: " + rise_set[1] + " EST" + "\n"
         if "true" in up_now.lower():
+            # If target rise is further away than target set, target is setting
             diff_rise = abs(Time(self.time_var) - OBS.target_rise_time(time=self.time_var, target=tab.current_target))
             diff_set = abs(Time(self.time_var) - OBS.target_set_time(time=self.time_var, target=tab.current_target))
             if diff_rise > diff_set:
@@ -252,8 +253,8 @@ def tab3_print(self, tab):
         else:
             str_info += "Currently below horizon\n\n"
 
-        str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
-        str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+            str_info += f"Maximum altitude: {max_alt:.2f}\n"
+            str_info += f"Minimum altitude: {min_alt:.2f}\n\n"
     except (TargetNeverUpWarning):
         str_info += "Rises: Does not rise\n"
         str_info += "Sets: Does not set\n"
@@ -264,11 +265,11 @@ def tab3_print(self, tab):
         str_info += "Rises: Does not rise\n"
         str_info += "Sets: Does not set\n"
         str_info += "Circumpolar\n\n"
-        str_info += "Maximum altitude: " + str(max_alt)[:5] + "\n"
-        str_info += "Minimum altitude: " + str(min_alt)[:5] + "\n\n"
+        str_info += f"Maximum altitude: {max_alt:.2f}\n"
+        str_info += f"Minimum altitude: {min_alt:.2f}\n\n"
     
-    str_info += "Altitude: " + str_alt + "\n"
-    str_info += "Azimuth: " + str_az + "\n"
+    str_info += "Current altitude: " + str_alt + "\n"
+    str_info += "Current azimuth: " + str_az + "\n"
 
     # Set label as the string info
     tab.label_info.setText(str_info)

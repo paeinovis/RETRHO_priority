@@ -1,0 +1,15 @@
+paetch notes two
+
+2/25/2025:
+- fixed template vs code discrepancies and changed "Altitude" to CURRENT altitude
+
+
+2/26/2025
+- fixed rise/set time vs. altitude discrepancy (it was in fact timezones)
+- fixed custom plot altitude issue
+
+
+
+prirhority TODO:
+- add side by side printed panes
+- add altitude vs time graph
