@@ -10,6 +10,9 @@ paetch notes two
 
 
 
+
+
 prirhority TODO:
 - add side by side printed panes
 - add altitude vs time graph
+- moon stuff (brightness, angular distance)

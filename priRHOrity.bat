@@ -1,3 +1,3 @@
 @echo off
-python planning.py
+py planning.py
 exit 0
