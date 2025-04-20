@@ -1,4 +1,4 @@
-import prioritylib.plots as plots
+import prioritylib.plotters as plotters
 import prioritylib.helpers as helpers
 import prioritylib.printers as printers
 import prioritylib.setters as setters

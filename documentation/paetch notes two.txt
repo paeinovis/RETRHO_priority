@@ -9,10 +9,18 @@ paetch notes two
 - fixed custom plot altitude issue
 
 
+4/13/25:
+- I've done other shit since Feb., just don't remember lol. Anyway. 
+- Hopefully fixed an issue with retaining ALL form responses in All Responses tab
+- Made data validation rules more fucken clear bc ppl are dunces
 
+
+4/19/2025:
+- Added altitude vs time plot
+- Changed "star from name" to "object from name"
 
 
 prirhority TODO:
 - add side by side printed panes
-- add altitude vs time graph
 - moon stuff (brightness, angular distance)
+- add auto update toggle

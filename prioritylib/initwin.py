@@ -1,5 +1,5 @@
 from lib import *
-import prioritylib.plots as plots
+import prioritylib.plotters as plotters
 import prioritylib.helpers as helpers
 import prioritylib.printers as printers
 import prioritylib.setters as setters
@@ -78,7 +78,7 @@ def init_window(self):
     self.tab2 = QWidget()
     self.tab3 = QWidget()
     self.tab4 = QWidget()
-    self.tabs.addTab(self.tab1, "Stars from name")
+    self.tabs.addTab(self.tab1, "Objects from name")
     self.tabs.addTab(self.tab2, "Objects from file")
     self.tabs.addTab(self.tab3, "Custom plot values")
     self.tabs.addTab(self.tab4, "Observer values")
@@ -154,7 +154,7 @@ def init_tab_one(self):
     self.tab1.sort_dropdown_button.clicked.connect(lambda: sorters.sort_targets_tab1(self))
 
     self.tab1.plot_button = QPushButton("Plot")
-    self.tab1.plot_button.clicked.connect(lambda: plots.plot(self, self.tab1))
+    self.tab1.plot_button.clicked.connect(lambda: plotters.plot(self, self.tab1))
 
     self.tab1.update_button = QPushButton("Update Targets Up Status")
     self.tab1.update_button.clicked.connect(lambda: helpers.determine_up(self.tab1.targets, self.tab1.target_names, self, self.tab1))
@@ -163,7 +163,10 @@ def init_tab_one(self):
     self.tab1.show_up_button.clicked.connect(lambda: helpers.change_only_show_up(self, self.tab1))
 
     self.tab1.plot_airmass_button = QPushButton("Plot airmass")
-    self.tab1.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self, self.tab1))
+    self.tab1.plot_airmass_button.clicked.connect(lambda: plotters.airmass_plot(self, self.tab1))
+
+    self.tab1.plot_alt_button = QPushButton("Plot altitude")
+    self.tab1.plot_alt_button.clicked.connect(lambda: plotters.az_time_plot(self, self.tab1))
 
     # Entire tab layout
     self.tab1.layout = QVBoxLayout()
@@ -174,6 +177,7 @@ def init_tab_one(self):
     self.tab1.layout.addWidget(self.tab1.label_info)
     self.tab1.layout.addWidget(self.tab1.plot_button)
     self.tab1.layout.addWidget(self.tab1.plot_airmass_button)
+    self.tab1.layout.addWidget(self.tab1.plot_alt_button)
     self.tab1.layout.addWidget(self.tab1.update_button)
     self.tab1.layout.addWidget(self.tab1.show_up_button)
     self.tab1.setLayout(self.tab1.layout)
@@ -217,10 +221,13 @@ def init_tab_two(self):
     self.tab2.sort_dropdown_button.clicked.connect(lambda: sorters.sort_targets_tab2(self))
 
     self.tab2.plot_button = QPushButton("Plot")
-    self.tab2.plot_button.clicked.connect(lambda: plots.plot_coords(self, self.tab2))
+    self.tab2.plot_button.clicked.connect(lambda: plotters.plot_coords(self, self.tab2))
 
     self.tab2.plot_airmass_button = QPushButton("Plot airmass")
-    self.tab2.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self, self.tab2))
+    self.tab2.plot_airmass_button.clicked.connect(lambda: plotters.airmass_plot(self, self.tab2))
+
+    self.tab2.plot_alt_button = QPushButton("Plot altitude")
+    self.tab2.plot_alt_button.clicked.connect(lambda: plotters.az_time_plot(self, self.tab2))
 
     self.tab2.update_button = QPushButton("Update Targets Up Status")
     self.tab2.update_button.clicked.connect(lambda: helpers.determine_up(self.tab2.targets, self.tab2.target_names, self, self.tab2))
@@ -230,6 +237,7 @@ def init_tab_two(self):
 
     self.tab2.file_upload_button = QPushButton("Upload TargetMasterSheet.csv file")
     self.tab2.file_upload_button.clicked.connect(lambda: open_file_dialog(self))
+
 
     # Entire tab layout
     self.tab2.layout = QVBoxLayout()
@@ -242,6 +250,7 @@ def init_tab_two(self):
     self.tab2.layout.addWidget(self.tab2.label_info)
     self.tab2.layout.addWidget(self.tab2.plot_button)
     self.tab2.layout.addWidget(self.tab2.plot_airmass_button)
+    self.tab2.layout.addWidget(self.tab2.plot_alt_button)
     self.tab2.layout.addWidget(self.tab2.update_button)
     self.tab2.layout.addWidget(self.tab2.show_up_button)
 
@@ -277,10 +286,13 @@ def init_tab_three(self):
     self.tab3.dec_input_button.clicked.connect(lambda: setters.change_dec(self))
 
     self.tab3.plot_button = QPushButton("Plot")
-    self.tab3.plot_button.clicked.connect(lambda: plots.plot_coords(self, self.tab3))
+    self.tab3.plot_button.clicked.connect(lambda: plotters.plot_coords(self, self.tab3))
 
     self.tab3.plot_airmass_button = QPushButton("Plot airmass")
-    self.tab3.plot_airmass_button.clicked.connect(lambda: plots.airmass_plot(self, self.tab3))
+    self.tab3.plot_airmass_button.clicked.connect(lambda: plotters.airmass_plot(self, self.tab3))
+
+    self.tab3.plot_alt_button = QPushButton("Plot altitude")
+    self.tab3.plot_alt_button.clicked.connect(lambda: plotters.az_time_plot(self, self.tab3))
 
     self.tab3.get_info_button = QPushButton("Print info")
     self.tab3.get_info_button.clicked.connect(lambda: printers.tab3_print(self, self.tab3))
@@ -295,6 +307,7 @@ def init_tab_three(self):
     self.tab3.layout.addWidget(self.tab3.dec_input_button)
     self.tab3.layout.addWidget(self.tab3.plot_button)
     self.tab3.layout.addWidget(self.tab3.plot_airmass_button)
+    self.tab3.layout.addWidget(self.tab3.plot_alt_button)
     self.tab3.layout.addWidget(self.tab3.get_info_button)
     self.tab3.layout.addWidget(self.tab3.label_info)
 

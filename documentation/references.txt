@@ -18,7 +18,10 @@ https://stackoverflow.com/questions/21800169/python-pandas-get-index-of-rows-whe
 https://www.geeksforgeeks.org/how-to-set-icon-to-a-window-in-pyqt5/
 https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
 https://realpython.com/python-csv/
+https://docs.astropy.org/en/latest/coordinates/example_gallery_plot_obs_planning.html
+
 
 Observatory values taken in part from:
 https://github.com/astropy/astropy-data/blob/gh-pages/coordinates/sites.json
 https://asd.gsfc.nasa.gov/archive/idlastro/ftp/pro/astro/observatory.pro
+
