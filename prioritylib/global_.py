@@ -18,7 +18,7 @@ OBS = Observer(
 
 # These must be manually updated if changes to the template are made !!!
 NAME = "Primary Identifier**"
-SEC_NAME = "Secondary Identifier \n(e.g., planet, reference star, or common name)"
+SEC_NAME = "Secondary Identifier \n(e.g., planet, common name, or reference object)"
 RA = "RA**"
 DEC = "Dec**"
 MAG_V = "V Magnitude**"	
