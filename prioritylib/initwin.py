@@ -470,6 +470,7 @@ def init_tab1_target_names(self, temp_target_names):
 
 # (Re)init tab2 values
 def init_tab2_target_names(self):
+    msg = ""
     if self.tab2.target_names:
         self.tab2.target_names[:] = [] 
         self.tab2.up_target_names[:] = [] 
@@ -508,19 +509,20 @@ def init_tab2_target_names(self):
             name += priority
             self.tab2.target_names.append(name)
             msg = "Successfully parsed file."
-        except (KeyError, ValueError, TypeError):
-            msg = "Error parsing file. Please check template of submitted sheet."
-            setters.set_default(self, self.tab2, msg)
-            return False
-        except (NameResolveError, NoResultsWarning):
-            priority = " (" + str(self.sheet.at[i, PRIORITY]) + ")"
-            name += priority
-            self.tab2.target_names.append(name)
-            name = self.sheet[NAME][i]
-            curr_coords = self.sheet[RA][i] + " " + self.sheet.at[i, DEC]
-            curr_coords = SkyCoord(curr_coords, unit=(u.hour, u.deg), frame='icrs')
-            curr_target = FixedTarget(curr_coords, name=name)
-            self.tab2.targets.append(curr_target)
+        except (NameResolveError, NoResultsWarning, TypeError, KeyError, ValueError):
+            try: 
+                priority = " (" + str(self.sheet.at[i, PRIORITY]) + ")"
+                name += priority
+                self.tab2.target_names.append(name)
+                name = self.sheet[NAME][i]
+                curr_coords = self.sheet[RA][i] + " " + self.sheet.at[i, DEC]
+                curr_coords = SkyCoord(curr_coords, unit=(u.hour, u.deg), frame='icrs')
+                curr_target = FixedTarget(curr_coords, name=name)
+                self.tab2.targets.append(curr_target)
+            except (NameResolveError, NoResultsWarning, TypeError, KeyError, ValueError):   # If it's an error with the sheet and not with the object, reject
+                msg = "Error parsing file. Please check template of submitted sheet."
+                setters.set_default(self, self.tab2, msg)
+                return False
     if helpers.determine_up(self.tab2.targets, self.tab2.target_names, self, self.tab2):
         self.tab2.label_info.setText(msg)
         self.tab2.targets_dropdown.clear()
