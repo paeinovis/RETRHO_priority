@@ -20,7 +20,17 @@ paetch notes two
 - Changed "star from name" to "object from name"
 
 
-prirhority TODO:
+9/5/2025:
+- Added sun, moon altazs to plots as well as darkness shading
+- Fixed a timezone print issue
+- Added SSO to list of observatories in dropdown
+
+
+priRHOrity TODO:
+- BUG: timezones and airmass plot dont agree (check package versions ???)
 - add side by side printed panes
 - moon stuff (brightness, angular distance)
-- add auto update toggle
+- add auto update toggle (ETA: idk what I meant by this.)
+- add sunrise/sunset info? (should be easy)
+- add solar system ephemera??
+- maybe try to combine airmass and altitude into one window but it looks really difficult for no reason (maybe two windows?)

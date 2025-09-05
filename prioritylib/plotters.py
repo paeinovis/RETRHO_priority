@@ -82,6 +82,7 @@ def airmass_plot(self, tab):
                             brightness_shading=True)
         ax.set_title(title)
         ax.grid(visible=True)   
+        ax.set_ylim(5, 1)
         figure.add_subplot(ax)
         
         canvas = FigureCanvas(figure)
@@ -94,10 +95,9 @@ def airmass_plot(self, tab):
     except (exceptions.LargeQueryWarning, ReadTimeout, TimeoutError, IERSWarning):
         setters.set_default(self, tab, "Download timed out, please try again.")
         return
-    
 
 # This is adapted from astropy documentation here: https://docs.astropy.org/en/latest/coordinates/example_gallery_plot_obs_planning.html
-def az_time_plot(self, tab):
+def alt_time_plot(self, tab):
     if tab is self.tab3:
         title = "Altitude plot from coordinates"
         title_2 = "Altitude Plot from Coordinates"
@@ -117,9 +117,12 @@ def az_time_plot(self, tab):
         delta_time = np.linspace(-12, 12, 1000) * u.hour
         times = Time(self.time_var) + delta_time
         frame = AltAz(obstime=times, location=OBS.location)
+
+        sunaltazs = coordinates.get_sun(times).transform_to(frame)
+        moonaltazs = coordinates.get_body("moon", times).transform_to(frame)
         altazs = tab.coords.transform_to(frame)
 
-        figure, ax = plt.subplots(1, 1)
+        figure, ax = plt.subplots(1, 1, figsize=(8, 6))
         canvas = FigureCanvas(figure)
         ax.set_title(title)
 
@@ -129,10 +132,31 @@ def az_time_plot(self, tab):
             c=altazs.az.value,
             label=title_3,
             edgecolor='none',
-            lw=0,
-            s=8,
+            lw=3,
+            s=10,
             cmap="gist_rainbow"
         )
+
+        ax.plot(delta_time, sunaltazs.alt, color="y", label="Sun", linewidth=3)
+        ax.plot(delta_time, moonaltazs.alt, color=[0.75] * 3, label="Moon", linewidth=3)
+
+        ax.fill_between(
+            delta_time / u.hour,
+            0,
+            90,
+            sunaltazs.alt < (-0 * u.deg),
+            color="0.5",
+            zorder=0,
+        )
+        ax.fill_between(
+            delta_time / u.hour,
+            0,
+            90,
+            sunaltazs.alt < (-18 * u.deg),
+            color="k",
+            zorder=0,
+        )
+
 
         ax.set_xlim(-12, 12)
         ax.set_xticks((np.arange(13) * 2 - 12))
@@ -140,6 +164,7 @@ def az_time_plot(self, tab):
 
         ax.set_ylabel("Altitude [deg]")
         ax.set_xlabel("Hours from program time")
+        ax.legend(loc="upper left")
         ax.grid(visible=True)
         figure.colorbar(mappable).set_label("Azimuth [deg]")
 
@@ -152,6 +177,3 @@ def az_time_plot(self, tab):
     except (exceptions.LargeQueryWarning, ReadTimeout, TimeoutError, IERSWarning):
         setters.set_default(self, tab, "Request timed out, please try again.")
         return
-    except:
-        e = sys.exc_info()[0]
-        print(e)

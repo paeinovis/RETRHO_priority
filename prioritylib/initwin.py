@@ -166,7 +166,7 @@ def init_tab_one(self):
     self.tab1.plot_airmass_button.clicked.connect(lambda: plotters.airmass_plot(self, self.tab1))
 
     self.tab1.plot_alt_button = QPushButton("Plot altitude")
-    self.tab1.plot_alt_button.clicked.connect(lambda: plotters.az_time_plot(self, self.tab1))
+    self.tab1.plot_alt_button.clicked.connect(lambda: plotters.alt_time_plot(self, self.tab1))
 
     # Entire tab layout
     self.tab1.layout = QVBoxLayout()
@@ -227,7 +227,7 @@ def init_tab_two(self):
     self.tab2.plot_airmass_button.clicked.connect(lambda: plotters.airmass_plot(self, self.tab2))
 
     self.tab2.plot_alt_button = QPushButton("Plot altitude")
-    self.tab2.plot_alt_button.clicked.connect(lambda: plotters.az_time_plot(self, self.tab2))
+    self.tab2.plot_alt_button.clicked.connect(lambda: plotters.alt_time_plot(self, self.tab2))
 
     self.tab2.update_button = QPushButton("Update Targets Up Status")
     self.tab2.update_button.clicked.connect(lambda: helpers.determine_up(self.tab2.targets, self.tab2.target_names, self, self.tab2))
@@ -292,7 +292,7 @@ def init_tab_three(self):
     self.tab3.plot_airmass_button.clicked.connect(lambda: plotters.airmass_plot(self, self.tab3))
 
     self.tab3.plot_alt_button = QPushButton("Plot altitude")
-    self.tab3.plot_alt_button.clicked.connect(lambda: plotters.az_time_plot(self, self.tab3))
+    self.tab3.plot_alt_button.clicked.connect(lambda: plotters.alt_time_plot(self, self.tab3))
 
     self.tab3.get_info_button = QPushButton("Print info")
     self.tab3.get_info_button.clicked.connect(lambda: printers.tab3_print(self, self.tab3))
