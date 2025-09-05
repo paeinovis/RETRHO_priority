@@ -9,9 +9,9 @@ def convert_time_to_string(self, time, offset=False):
         utc_tz = pytz.timezone('UTC')
         time = time.to_datetime(timezone=utc_tz)
         time = time.astimezone(self.obs_timezone)
-    hms = time.strftime('%H:%M:%S')
+    hmsz = time.strftime('%H:%M:%S %Z%z')
     day = time.strftime('%m/%d/%Y')
-    return [day, hms]
+    return [day, hmsz]
 
 # Determines which objects are above horizon
 def determine_up(targets, obj_names, self, tab):

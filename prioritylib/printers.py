@@ -80,8 +80,8 @@ def get_info_of_obj(self, tab):
 
     try: 
         rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
-        str_info += "Rises: " + rise_set[0] + " EST" + "\n"
-        str_info += "Sets: " + rise_set[1] + " EST" + "\n"
+        str_info += "Rises: " + rise_set[0] + "\n"
+        str_info += "Sets: " + rise_set[1] + "\n"
         if "true" in up_now.lower():
             diff_rise = abs(Time(self.time_var) - OBS.target_rise_time(time=self.time_var, target=tab.current_target))
             diff_set = abs(Time(self.time_var) - OBS.target_set_time(time=self.time_var, target=tab.current_target))
@@ -164,8 +164,8 @@ def print_csv_target(self):
 
                 try: 
                     rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=self.tab2.current_target), True)[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=self.tab2.current_target), True)[1]]
-                    str_info += "Rises: " + rise_set[0] + " EST" + "\n"
-                    str_info += "Sets: " + rise_set[1] + " EST" + "\n"
+                    str_info += "Rises: " + rise_set[0] + "\n"
+                    str_info += "Sets: " + rise_set[1] + "\n"
                     if "true" in up_now.lower():
                         diff_rise = abs(Time(self.time_var) - OBS.target_rise_time(time=self.time_var, target=self.tab2.current_target))
                         diff_set = abs(Time(self.time_var) - OBS.target_set_time(time=self.time_var, target=self.tab2.current_target))
@@ -240,8 +240,8 @@ def tab3_print(self, tab):
 
     try: 
         rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
-        str_info += "Rises: " + rise_set[0] + " EST" + "\n"
-        str_info += "Sets: " + rise_set[1] + " EST" + "\n"
+        str_info += "Rises: " + rise_set[0] + "\n"
+        str_info += "Sets: " + rise_set[1] + "\n"
         if "true" in up_now.lower():
             # If target rise is further away than target set, target is setting
             diff_rise = abs(Time(self.time_var) - OBS.target_rise_time(time=self.time_var, target=tab.current_target))
