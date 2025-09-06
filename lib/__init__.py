@@ -48,7 +48,7 @@ from PyQt5.QtWidgets import QApplication
 
 try:
     import ctypes
-    myappid = u'prirhority'
+    myappid = u'priRHOrity'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except (AttributeError):
     pass

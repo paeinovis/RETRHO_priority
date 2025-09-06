@@ -1,0 +1,1 @@
+CreateObject("Wscript.Shell").Run "priRHOrity.bat",0,True
