@@ -104,6 +104,7 @@ def init_window(self):
     self.use_curr_time = True
 
     # Init
+    init_obs(self)
     init_tab_one(self)
     init_tab_two(self)
     init_tab_three(self)
@@ -111,6 +112,35 @@ def init_window(self):
 
     info = "Program time:\n\nName:\nIdentifier:\nUp now:\n\nCoordinates RA:\nCoordinates DEC:\nMagnitude V:\n\nRises:\nSets:\n\n\nMaximum altitude:\nMinimum altitude:\n\nAltitude:\nAzimuth:\n"
     self.tab1.label_info.setText(info)   
+
+# Define list of observatories
+def init_obs(self):
+    # Defines obs initially as Rosemary Hill Observatory
+    self.obs = Observer(
+        location=coordinates.EarthLocation(lat=DEF_LATITUDE * u.deg, lon=DEF_LONGITUDE * u.deg, height=DEF_HEIGHT * u.m),
+        timezone=DEF_TIMEZONE,
+        name=DEF_NAME
+    )
+
+    self.observatories = [self.obs]
+    self.observatories_names = [DEF_NAME]
+    self.reader_obj = None
+
+    try: 
+        with open('files/observatories.csv') as file_obj: 
+            reader_obj = csv.reader(file_obj) 
+            for row in reader_obj: 
+                try:
+                    curr_obs = Observer(location=coordinates.EarthLocation(lat=float(row[1]) * u.deg, lon=float(row[2]) * u.deg, height=float(row[3]) * u.m),
+                                        timezone=pytz.timezone(row[4]),
+                                        name=row[0])
+                    self.observatories.append(curr_obs)
+                    self.observatories_names.append(row[0])
+                except (ValueError, TypeError):
+                    continue
+    except (FileNotFoundError, ValueError, TypeError):
+        pass
+
 
 def init_tab_one(self):
     # Tab 1 objects:
@@ -383,7 +413,7 @@ def init_tab_four(self):
     self.tab4.label_info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
     self.tab4.obs_list_dropdown = QComboBox()
-    self.tab4.obs_list_dropdown.addItems(OBSERVATORIES_NAMES)
+    self.tab4.obs_list_dropdown.addItems(self.observatories_names)
     self.tab4.obs_list_dropdown_button = QPushButton("Change observer values to predefined observatory")
     self.tab4.obs_list_dropdown_button.clicked.connect(lambda: setters.set_observatory(self))
 
@@ -454,7 +484,7 @@ def init_tab1_target_names(self, temp_target_names):
         except(NameResolveError):
             continue
         try:
-            if OBS.target_is_up(now, curr_target):
+            if self.obs.target_is_up(now, curr_target):
                 self.tab1.target_names.append(star + " (Up)")       # So user can see if a given object is in the sky
                 self.tab1.up_target_names.append(star)
             else:

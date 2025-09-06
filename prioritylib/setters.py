@@ -89,7 +89,7 @@ def change_lon(self):
             timezone=self.obs_timezone,
             name=self.obs_name
         )
-        OBS = new_obs
+        self.obs = new_obs
         self.obs_lon = lon_float
         update = "Updated longitude to " + str(self.obs_lon) + "." + "\n\nCurrent information" + printers.get_obs_info(self) + "\n\nCurrent information" + printers.get_obs_info(self)
     except(ValueError, TypeError):
@@ -111,7 +111,7 @@ def change_lat(self):
             timezone=self.obs_timezone,
             name=self.obs_name
         )
-        OBS = new_obs
+        self.obs = new_obs
         self.obs_lat = lat_float
         # ^ this is AFTER attempt to define observer so the value is ensured correct
         update = "Updated latitude to " + str(self.obs_lat) + "." + "\n\nCurrent information" + printers.get_obs_info(self)
@@ -137,7 +137,7 @@ def change_timezone(self):
             timezone=new_tz,
             name=self.obs_name
         )
-        OBS = new_obs
+        self.obs = new_obs
         new_tz = pytz.timezone(new_tz)
         self.obs_timezone = new_tz
 
@@ -169,7 +169,7 @@ def change_name(self):
             timezone=self.obs_timezone,
             name=new_name
         )
-        OBS = new_obs
+        self.obs = new_obs
         self.obs_name = new_name
         update = "Updated name to " + str(self.obs_name) + "." + "\n\nCurrent information" + printers.get_obs_info(self)
     except(ValueError, TypeError):
@@ -187,7 +187,7 @@ def change_height(self):
             timezone=self.obs_timezone,
             name=self.obs_name
         )
-        OBS = new_obs
+        self.obs = new_obs
         self.obs_height = height_float
         update = "Updated height to " + str(self.obs_height) + "." + "\n\nCurrent information" + printers.get_obs_info(self)
     except(ValueError, TypeError):
@@ -208,7 +208,7 @@ def reset_observer(self):
     self.obs_timezone = pytz.timezone(str(DEF_TIMEZONE))
     self.obs_name = str(DEF_NAME)
 
-    OBS = Observer(
+    self.obs = Observer(
         location=coordinates.EarthLocation(lat=DEF_LATITUDE * u.deg, lon=DEF_LONGITUDE * u.deg, height=DEF_HEIGHT * u.m),
         timezone=DEF_TIMEZONE,
         name=DEF_NAME
@@ -241,15 +241,14 @@ def reset_tab2(self):
 def set_observatory(self):
     update = "Observatory could not be updated." + "\n\nCurrent information" + printers.get_obs_info(self)
     new_obs_name = self.tab4.obs_list_dropdown.currentText()
-    try:
-        index_of_name = OBSERVATORIES_NAMES.index(new_obs_name)
-        new_obs = OBSERVATORIES[index_of_name]
-        OBS = new_obs
-        self.obs_lat = float(OBS.latitude / u.deg)
-        self.obs_lon = float(OBS.longitude / u.deg)
-        self.obs_height = float(OBS.elevation / u.m)
-        self.obs_timezone = pytz.timezone(str(OBS.timezone))
-        self.obs_name = OBS.name
+    try:      
+        index_of_name = self.observatories_names.index(new_obs_name) 
+        self.obs = self.observatories[index_of_name]
+        self.obs_lat = float(self.obs.latitude / u.deg)
+        self.obs_lon = float(self.obs.longitude / u.deg)
+        self.obs_height = float(self.obs.elevation / u.m)
+        self.obs_timezone = pytz.timezone(str(self.obs.timezone))
+        self.obs_name = self.obs.name
         update = "Updated observatory to " + str(self.obs_name) + "." + "\n\nCurrent information" + printers.get_obs_info(self)
     except(ValueError, KeyError):
         pass

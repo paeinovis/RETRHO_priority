@@ -75,9 +75,10 @@ def airmass_plot(self, tab):
 
     try: 
         figure = plt.figure(figsize=(8, 6))
+        time_to_plot = self.time_var
         ax = plot_airmass(tab.current_target, 
-                            observer=OBS, 
-                            time=self.time_var, 
+                            observer=self.obs, 
+                            time=time_to_plot, 
                             use_local_tz=True,
                             brightness_shading=True)
         ax.set_title(title)
@@ -116,7 +117,7 @@ def alt_time_plot(self, tab):
     try: 
         delta_time = np.linspace(-12, 12, 1000) * u.hour
         times = Time(self.time_var) + delta_time
-        frame = AltAz(obstime=times, location=OBS.location)
+        frame = AltAz(obstime=times, location=self.obs.location)
 
         sunaltazs = coordinates.get_sun(times).transform_to(frame)
         moonaltazs = coordinates.get_body("moon", times).transform_to(frame)

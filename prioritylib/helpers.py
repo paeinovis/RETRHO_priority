@@ -36,7 +36,7 @@ def determine_up(targets, obj_names, self, tab):
             obj_name = obj_name[0:-4]                # Cuts off priority (e.g., ' (1)') part of name if available
             
         try: 
-            if OBS.target_is_up(self.time_var, obj):
+            if self.obs.target_is_up(self.time_var, obj):
                 new_list.append(obj_name + " (Up)" + priority)       # So user can see if a given object is in the sky. I maybe should've done this in a smarter manner but it's too late now!!!!
                 tab.up_target_names.append(obj_name + " (Up)" + priority)
             else:
@@ -88,7 +88,7 @@ def update(self, tab):
             tab.targets_dropdown.addItems(tab.up_target_names)
         
         try:
-            if OBS.target_is_up(self.time_var, tab.current_target):
+            if self.obs.target_is_up(self.time_var, tab.current_target):
                 tab.targets_dropdown.setCurrentText(up_name)
                 tab.target_names[index_of_name] = up_name
             else:
@@ -108,7 +108,7 @@ def update(self, tab):
             tab.targets.insert(0, tab.current_target)
             tab.target_names.insert(0, name)
             try:
-                if OBS.target_is_up(self.time_var, tab.current_target):
+                if self.obs.target_is_up(self.time_var, tab.current_target):
                     name = name + " (Up)"
                     tab.up_target_names.insert(0, name)     
                     up_name = name
@@ -124,7 +124,7 @@ def update(self, tab):
     else:
         tab.targets_dropdown.addItems(tab.up_target_names)
     try: 
-        if OBS.target_is_up(self.time_var, tab.current_target):
+        if self.obs.target_is_up(self.time_var, tab.current_target):
             tab.targets_dropdown.setCurrentText(up_name)
             tab.target_names[index_of_name] = up_name
         else:

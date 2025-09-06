@@ -42,12 +42,12 @@ def get_info_of_obj(self, tab):
         coords_dec = tab.result_table["dec"]
 
     # Idk what to say abt this, sometimes the true/false comes like [True] and other times it comes like True. I don't get it .
-    up_now = str(OBS.target_is_up(self.time_var, tab.current_target))
+    up_now = str(self.obs.target_is_up(self.time_var, tab.current_target))
     if "[" in up_now:
         up_now = up_now.split("[")[1]
         up_now = up_now.split("]")[0]
 
-    alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=OBS.location))
+    alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=self.obs.location))
     str_alt = str(alt_az.alt)[1:-8] 
     if "s" not in str_alt:
         str_alt += "s"
@@ -79,12 +79,12 @@ def get_info_of_obj(self, tab):
     min_alt = self.obs_lat - (90 - dec_num)
 
     try: 
-        rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
+        rise_set = [helpers.convert_time_to_string(self, self.obs.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.convert_time_to_string(self, self.obs.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
         str_info += "Rises: " + rise_set[0] + "\n"
         str_info += "Sets: " + rise_set[1] + "\n"
         if "true" in up_now.lower():
-            diff_rise = abs(Time(self.time_var) - OBS.target_rise_time(time=self.time_var, target=tab.current_target))
-            diff_set = abs(Time(self.time_var) - OBS.target_set_time(time=self.time_var, target=tab.current_target))
+            diff_rise = abs(Time(self.time_var) - self.obs.target_rise_time(time=self.time_var, target=tab.current_target))
+            diff_set = abs(Time(self.time_var) - self.obs.target_set_time(time=self.time_var, target=tab.current_target))
             if diff_rise > diff_set:
                 str_info += "Currently setting\n\n" 
             else:
@@ -138,13 +138,13 @@ def print_csv_target(self):
             if PRETTY_COLUMNS[index] == "\nB Filter":
                 prog_time = helpers.convert_time_to_string(self, self.time_var)
                 str_info += "Program time: " + prog_time[0] + " " + prog_time[1] + "\n\n"
-                up_now = str(OBS.target_is_up(self.time_var, self.tab2.current_target))
+                up_now = str(self.obs.target_is_up(self.time_var, self.tab2.current_target))
                 if "[" in up_now:
                     up_now = up_now.split("[")[1]
                     up_now = up_now.split("]")[0]
                 str_info += "Up now: " + up_now + "\n"
 
-                alt_az = self.tab2.coords.transform_to(AltAz(obstime=self.time_var, location=OBS.location))
+                alt_az = self.tab2.coords.transform_to(AltAz(obstime=self.time_var, location=self.obs.location))
                 str_alt = str(alt_az.alt)[0:-7] 
                 if "s" not in str_alt:
                     str_alt += "s"
@@ -163,12 +163,12 @@ def print_csv_target(self):
                 min_alt = self.obs_lat - (90 - dec_num)
 
                 try: 
-                    rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=self.tab2.current_target), True)[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=self.tab2.current_target), True)[1]]
+                    rise_set = [helpers.convert_time_to_string(self, self.obs.target_rise_time(time=self.time_var, target=self.tab2.current_target), True)[1], helpers.convert_time_to_string(self, self.obs.target_set_time(time=self.time_var, target=self.tab2.current_target), True)[1]]
                     str_info += "Rises: " + rise_set[0] + "\n"
                     str_info += "Sets: " + rise_set[1] + "\n"
                     if "true" in up_now.lower():
-                        diff_rise = abs(Time(self.time_var) - OBS.target_rise_time(time=self.time_var, target=self.tab2.current_target))
-                        diff_set = abs(Time(self.time_var) - OBS.target_set_time(time=self.time_var, target=self.tab2.current_target))
+                        diff_rise = abs(Time(self.time_var) - self.obs.target_rise_time(time=self.time_var, target=self.tab2.current_target))
+                        diff_set = abs(Time(self.time_var) - self.obs.target_set_time(time=self.time_var, target=self.tab2.current_target))
                         if diff_rise > diff_set:
                             str_info += "Currently setting\n\n" 
                         else:
@@ -208,12 +208,12 @@ def tab3_print(self, tab):
     if self.use_curr_time:
         self.time_var = dt.datetime.now(self.obs_timezone)                    # Update time If Needed
 
-    up_now = str(OBS.target_is_up(self.time_var, tab.current_target))
+    up_now = str(self.obs.target_is_up(self.time_var, tab.current_target))
     if "[" in up_now:
         up_now = up_now.split("[")[1]
         up_now = up_now.split("]")[0]
 
-    alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=OBS.location))
+    alt_az = tab.coords.transform_to(AltAz(obstime=self.time_var, location=self.obs.location))
     str_alt = str(alt_az.alt)[0:-7] 
     if "s" not in str_alt:
         str_alt += "s"
@@ -239,13 +239,13 @@ def tab3_print(self, tab):
     min_alt = self.obs_lat - (90 - dec_num)
 
     try: 
-        rise_set = [helpers.convert_time_to_string(self, OBS.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.convert_time_to_string(self, OBS.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
+        rise_set = [helpers.convert_time_to_string(self, self.obs.target_rise_time(time=self.time_var, target=tab.current_target), True)[1], helpers.convert_time_to_string(self, self.obs.target_set_time(time=self.time_var, target=tab.current_target), True)[1]]
         str_info += "Rises: " + rise_set[0] + "\n"
         str_info += "Sets: " + rise_set[1] + "\n"
         if "true" in up_now.lower():
             # If target rise is further away than target set, target is setting
-            diff_rise = abs(Time(self.time_var) - OBS.target_rise_time(time=self.time_var, target=tab.current_target))
-            diff_set = abs(Time(self.time_var) - OBS.target_set_time(time=self.time_var, target=tab.current_target))
+            diff_rise = abs(Time(self.time_var) - self.obs.target_rise_time(time=self.time_var, target=tab.current_target))
+            diff_set = abs(Time(self.time_var) - self.obs.target_set_time(time=self.time_var, target=tab.current_target))
             if diff_rise > diff_set:
                 str_info += "Currently setting\n\n" 
             else:
