@@ -15,6 +15,7 @@ NAME = "Primary Identifier**"
 SEC_NAME = "Secondary Identifier \n(e.g., planet, common name, or reference object)"
 RA = "RA**"
 DEC = "Dec**"
+TYPE_OF_OBJECT = "Type of Object**"
 MAG_V = "V Magnitude**"	
 MAG_B = "B Magnitude"
 OBS_WIN_OPEN = "Obs. window opens*"	
@@ -34,12 +35,12 @@ PROCEDURES = "Observation procedures*"
 JUSTIFICATION = "Scientific justification"
 NOTES = "Notes?"
 
-COLUMNS = [NAME, SEC_NAME, RA, DEC, MAG_V, MAG_B, 
+COLUMNS = [NAME, SEC_NAME, TYPE_OF_OBJECT, RA, DEC, MAG_V, MAG_B, 
            OBS_WIN_OPEN, OBS_WIN_CLOSE, PRIORITY, 
            FIL_B, FIL_G, FIL_R, FIL_I, FIL_Z, FIL_H, FIL_O, FIL_S, 
            BASELINE, PROCEDURES, JUSTIFICATION, NOTES]
 
-PRETTY_COLUMNS = ["Name", "Secondary Name", "\nRA", "Dec", "\nV Magnitude", "B Magnitude",
+PRETTY_COLUMNS = ["Name", "Secondary Name", "Type of Object", "\nRA", "Dec", "\nV Magnitude", "B Magnitude",
                   "\nObs. window opens", "Obs. window closes", "Priority",
                   "\nB Filter", "g Filter", "r Filter", "i Filter", "z Filter", "H-alpha Filter", "O III Filter", "S II Filter",
                   "\nBaseline", "\nObservation procedures", "\nScientific Justification", "\nNotes"]
