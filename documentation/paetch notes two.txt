@@ -27,6 +27,11 @@ paetch notes two
 - Fixed observer not updating issue caused by global variable behavior; darkness shading now functions correctly
 
 
+10/8/2025:
+- updated headers corresponding to template updates
+
+
+
 priRHOrity TODO:
 - add side by side printed panes
 - moon stuff (brightness, angular distance)
@@ -34,3 +39,5 @@ priRHOrity TODO:
 - add sunrise/sunset info? (should be easy)
 - add solar system ephemera??
 - maybe try to combine airmass and altitude into one window but it looks really difficult for no reason (maybe one button makes two windows?)
+- altitude horizontal line for airmass/alt plots
+-> requires us to add customizable altaz limits to fourth tab blahblah

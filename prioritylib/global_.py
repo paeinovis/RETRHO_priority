@@ -13,15 +13,18 @@ DEF_NAME = 'Rosemary Hill Observatory'
 # These must be manually updated if changes to the template are made !!!
 NAME = "Primary Identifier**"
 SEC_NAME = "Secondary Identifier \n(e.g., planet, common name, or reference object)"
+TYPE_OF_OBJECT = "Type of Object**"
 RA = "RA**"
 DEC = "Dec**"
-TYPE_OF_OBJECT = "Type of Object**"
 MAG_V = "V Magnitude**"	
 MAG_B = "B Magnitude"
-OBS_WIN_OPEN = "Obs. window opens*"	
-OBS_WIN_CLOSE = "Obs. window closes*"	
-PRIORITY = "Priority*"
-QUAL = "Preferred Quality"
+OBS_WIN_OPEN = "Obs. window opens**"	
+OBS_WIN_CLOSE = "Obs. window closes**"	
+''' Primary Identifier**	"Secondary Identifier 
+(e.g., planet, common name, or reference object)"	Type of Object**	RA**	Dec**	V Magnitude**	B Magnitude	Obs. window opens**	Obs. window closes**	Priority**	Preferred Quality	"Filter(s) to be 
+ observed in**"	B	g	r	i	z	H-alpha	O III	S II	Baseline*	Observation procedures*	Scientific justification	Notes? '''
+PRIORITY = "Priority**"
+QUAL = "Preferred Quality**"
 FIL_B = "B"
 FIL_G = "g"
 FIL_R = "r"
