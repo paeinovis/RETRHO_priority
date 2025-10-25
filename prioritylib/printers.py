@@ -279,7 +279,17 @@ def get_obs_info(self):
         self.time_var = dt.datetime.now(self.obs_timezone)                    # Update time If Needed
 
     time_arr = helpers.convert_time_to_string(self, self.time_var)
-    str_msg = "\nTime: " + time_arr[0] + " " + time_arr[1] + f"\n\nLatitude: {self.obs_lat:.2f} degrees" + f"\nLongitude: {self.obs_lon:.2f} degrees" + f"\nHeight: {self.obs_height:.2f} meters" + "\n\nTimezone: " + str(self.obs_timezone) + "\n\nName: " + str(self.obs_name)
+    str_msg = ( "\nTime: " + time_arr[0] + " " + time_arr[1] 
+                + f"\n\nLatitude: {self.obs_lat:.2f} degrees" 
+                + f"\nLongitude: {self.obs_lon:.2f} degrees" 
+                + f"\nHeight: {self.obs_height:.2f} meters" 
+                + "\n\nUpper altitude limit: " + str(self.upper_alt_limit) 
+                + "\nLower altitude limit: " + str(self.lower_alt_limit) 
+                + "\n\nTimezone: " + str(self.obs_timezone) 
+                + "\n\nName: " + str(self.obs_name)
+                + "\n\nSunrise: " + helpers.convert_time_to_string(self, self.obs.sun_rise_time(Time(self.time_var)), True)[1]
+                + "\nSunset: " + helpers.convert_time_to_string(self, self.obs.sun_set_time(Time(self.time_var)), True)[1] 
+            )
     return str_msg
 
 def get_tab_three_info(self):

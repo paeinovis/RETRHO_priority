@@ -10,7 +10,7 @@ from astropy.time import Time
 from astroplan.plots import plot_airmass, plot_finder_image, plot_sky
 from astroquery.simbad import Simbad
 from astroquery import exceptions
-from PyQt5.QtWidgets import QComboBox, QMainWindow, QApplication, QPushButton, QWidget, QAction, QVBoxLayout, QLabel, QTabWidget, QInputDialog, QLineEdit, QFileDialog, QScrollArea, QMessageBox
+from PyQt5.QtWidgets import QComboBox, QMainWindow, QGridLayout, QApplication, QPushButton, QWidget, QAction, QVBoxLayout, QLabel, QTabWidget, QInputDialog, QLineEdit, QFileDialog, QScrollArea, QMessageBox
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import pyqtSlot

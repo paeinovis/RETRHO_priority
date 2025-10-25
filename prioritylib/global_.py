@@ -20,9 +20,6 @@ MAG_V = "V Magnitude**"
 MAG_B = "B Magnitude"
 OBS_WIN_OPEN = "Obs. window opens**"	
 OBS_WIN_CLOSE = "Obs. window closes**"	
-''' Primary Identifier**	"Secondary Identifier 
-(e.g., planet, common name, or reference object)"	Type of Object**	RA**	Dec**	V Magnitude**	B Magnitude	Obs. window opens**	Obs. window closes**	Priority**	Preferred Quality	"Filter(s) to be 
- observed in**"	B	g	r	i	z	H-alpha	O III	S II	Baseline*	Observation procedures*	Scientific justification	Notes? '''
 PRIORITY = "Priority**"
 QUAL = "Preferred Quality**"
 FIL_B = "B"
@@ -50,6 +47,3 @@ PRETTY_COLUMNS = ["Name", "Secondary Name", "Type of Object", "\nRA", "Dec", "\n
 
 SORT_NAMES_1 = ["Brightest", "Dimmest"]
 SORT_NAMES_2 = ["Brightest", "Dimmest", "Highest Priority"]
-
-
-

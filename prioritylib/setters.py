@@ -194,6 +194,31 @@ def change_height(self):
         pass
     self.tab4.label_info.setText(update)
 
+def change_upper_alt_lim(self):
+    update = "Upper limit could NOT be updated.\nEnsure that the value entered is below 90 degrees, above 0 degrees, and above the lower limit" + "\n\nCurrent information" + printers.get_obs_info(self)
+    try:
+        new_upper_lim = self.tab4.obs_alt_limit_upper_input.text()
+        upper_lim_float = float(new_upper_lim)
+        if ((upper_lim_float > 0) & (upper_lim_float < 90) & (upper_lim_float > self.lower_alt_limit)):
+            self.upper_alt_limit = upper_lim_float
+            update = "Updated height to " + str(self.upper_alt_limit) + "." + "\n\nCurrent information" + printers.get_obs_info(self)
+    except(ValueError, TypeError):
+        pass
+    self.tab4.label_info.setText(update)
+
+
+def change_lower_alt_lim(self):
+    update = "Lower limit could NOT be updated.\nEnsure that the value entered is below 90 degrees, above 0 degrees, and below the upper limit." + "\n\nCurrent information" + printers.get_obs_info(self)
+    try:
+        new_lower_lim = self.tab4.obs_alt_limit_lower_input.text()
+        lower_lim_float = float(new_lower_lim)
+        if ((lower_lim_float > 0) & (lower_lim_float < 90) & (lower_lim_float < self.upper_alt_limit)):
+            self.lower_alt_limit = lower_lim_float
+            update = "Updated height to " + str(self.lower_alt_limit) + "." + "\n\nCurrent information" + printers.get_obs_info(self)
+    except(ValueError, TypeError):
+        pass
+    self.tab4.label_info.setText(update)
+
 # Called when USER resets observer 
 def reset_observer_with_message(self):
     reset_observer(self)

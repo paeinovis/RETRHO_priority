@@ -31,13 +31,20 @@ paetch notes two
 - updated headers corresponding to template updates
 
 
+10/10/2025: 
+- submission code: target expiration has been fixed; data validation rigidity for multiple-target sheet updated; loosened restrictions on ra/dec for multiple and single target submission; updated error codes for specificity and completeness; organized code more and added more commentary, as well as spacing for legibility; tested and debugged quite a bit also
+
+
+10/25/2025:
+- tried and failed to find a reasonable solution to ephemerides so temporarily giving up on that
+- added altitude limits and shading
+- changed layout of inputs/buttons for readability
+- added sunrise/sunset times to observer values tab (tab 4)
 
 priRHOrity TODO:
 - add side by side printed panes
 - moon stuff (brightness, angular distance)
 - add auto update toggle (ETA: idk what I meant by this.)
-- add sunrise/sunset info? (should be easy)
 - add solar system ephemera??
 - maybe try to combine airmass and altitude into one window but it looks really difficult for no reason (maybe one button makes two windows?)
-- altitude horizontal line for airmass/alt plots
--> requires us to add customizable altaz limits to fourth tab blahblah
+- add search-observatory feature (default csv observatories but also searchable)

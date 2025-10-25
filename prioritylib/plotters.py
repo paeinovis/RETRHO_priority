@@ -157,7 +157,24 @@ def alt_time_plot(self, tab):
             color="k",
             zorder=0,
         )
-
+        # Fill in unobservable altitudes (upper)
+        ax.fill_between(
+            delta_time / u.hour,
+            self.upper_alt_limit,
+            90,
+            color="lightcoral",
+            zorder=0,
+            label = "Upper limit"
+        )
+        # (lower)
+        ax.fill_between(
+            delta_time / u.hour,
+            0,
+            self.lower_alt_limit,
+            color="lightcoral",
+            zorder=0,
+            label = "Lower limit"
+        )
 
         ax.set_xlim(-12, 12)
         ax.set_xticks((np.arange(13) * 2 - 12))

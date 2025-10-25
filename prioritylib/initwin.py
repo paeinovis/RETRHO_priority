@@ -41,7 +41,6 @@ class PopupWindow(QWidget):
         height = 100
         self.resize(width, height)
 
-
 def DAL_error(self):
     self.label.setText("There is a DAL Service Error preventing the program from connecting.\nPlease ensure you are connected to the Internet.")
 
@@ -122,6 +121,9 @@ def init_obs(self):
         name=DEF_NAME
     )
 
+    self.upper_alt_limit = 90
+    self.lower_alt_limit = 0
+
     self.observatories = [self.obs]
     self.observatories_names = [DEF_NAME]
     self.reader_obj = None
@@ -170,27 +172,21 @@ def init_tab_one(self):
     self.tab1.targets_dropdown.setEditable(True)
     self.tab1.targets_dropdown.setInsertPolicy(QComboBox.InsertAtTop)
 
+    self.tab1.targets_dropdown_button = QPushButton("Go")
+    self.tab1.targets_dropdown_button.clicked.connect(lambda: printers.get_info_of_obj(self, self.tab1))
+
     self.tab1.sort_dropdown = QComboBox()
     self.tab1.sort_dropdown.addItems(SORT_NAMES_1)
+
+    self.tab1.sort_dropdown_button = QPushButton("Sort")
+    self.tab1.sort_dropdown_button.clicked.connect(lambda: sorters.sort_targets_tab1(self))
 
     self.tab1.label_info = QLabel()
     self.tab1.label_info.setGeometry(200, 200, 200, 30)
     self.tab1.label_info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
-    self.tab1.targets_dropdown_button = QPushButton("Go")
-    self.tab1.targets_dropdown_button.clicked.connect(lambda: printers.get_info_of_obj(self, self.tab1))
-
-    self.tab1.sort_dropdown_button = QPushButton("Sort")
-    self.tab1.sort_dropdown_button.clicked.connect(lambda: sorters.sort_targets_tab1(self))
-
-    self.tab1.plot_button = QPushButton("Plot")
+    self.tab1.plot_button = QPushButton("Plot finder image")
     self.tab1.plot_button.clicked.connect(lambda: plotters.plot(self, self.tab1))
-
-    self.tab1.update_button = QPushButton("Update Targets Up Status")
-    self.tab1.update_button.clicked.connect(lambda: helpers.determine_up(self.tab1.targets, self.tab1.target_names, self, self.tab1))
-
-    self.tab1.show_up_button = QPushButton("Only Show Up Targets")
-    self.tab1.show_up_button.clicked.connect(lambda: helpers.change_only_show_up(self, self.tab1))
 
     self.tab1.plot_airmass_button = QPushButton("Plot airmass")
     self.tab1.plot_airmass_button.clicked.connect(lambda: plotters.airmass_plot(self, self.tab1))
@@ -198,18 +194,25 @@ def init_tab_one(self):
     self.tab1.plot_alt_button = QPushButton("Plot altitude")
     self.tab1.plot_alt_button.clicked.connect(lambda: plotters.alt_time_plot(self, self.tab1))
 
+    self.tab1.update_button = QPushButton("Update Targets Up Status")
+    self.tab1.update_button.clicked.connect(lambda: helpers.determine_up(self.tab1.targets, self.tab1.target_names, self, self.tab1))
+
+    self.tab1.show_up_button = QPushButton("Only Show Up Targets Toggle")
+    self.tab1.show_up_button.clicked.connect(lambda: helpers.change_only_show_up(self, self.tab1))
+
     # Entire tab layout
-    self.tab1.layout = QVBoxLayout()
-    self.tab1.layout.addWidget(self.tab1.targets_dropdown)
-    self.tab1.layout.addWidget(self.tab1.targets_dropdown_button)
-    self.tab1.layout.addWidget(self.tab1.sort_dropdown)
-    self.tab1.layout.addWidget(self.tab1.sort_dropdown_button)
-    self.tab1.layout.addWidget(self.tab1.label_info)
-    self.tab1.layout.addWidget(self.tab1.plot_button)
-    self.tab1.layout.addWidget(self.tab1.plot_airmass_button)
-    self.tab1.layout.addWidget(self.tab1.plot_alt_button)
-    self.tab1.layout.addWidget(self.tab1.update_button)
-    self.tab1.layout.addWidget(self.tab1.show_up_button)
+    self.tab1.layout = QGridLayout()
+
+    self.tab1.layout.addWidget(self.tab1.targets_dropdown, 0, 0)
+    self.tab1.layout.addWidget(self.tab1.targets_dropdown_button, 0, 1)
+    self.tab1.layout.addWidget(self.tab1.sort_dropdown, 1, 0)
+    self.tab1.layout.addWidget(self.tab1.sort_dropdown_button, 1, 1)
+    self.tab1.layout.addWidget(self.tab1.label_info, 2, 0)
+    self.tab1.layout.addWidget(self.tab1.plot_button, 3, 0, 1, 2)
+    self.tab1.layout.addWidget(self.tab1.plot_airmass_button, 4, 0)
+    self.tab1.layout.addWidget(self.tab1.plot_alt_button, 4, 1)
+    self.tab1.layout.addWidget(self.tab1.update_button, 5, 0, 1, 2)
+    self.tab1.layout.addWidget(self.tab1.show_up_button, 6, 0, 1, 2)
     self.tab1.setLayout(self.tab1.layout)
 
     init_tab1_target_names(self, temp_target_names)
@@ -230,13 +233,13 @@ def init_tab_two(self):
     self.tab2.target_names = [] 
     self.tab2.up_target_names = [] 
     self.tab2.targets = []
-    self.tab2.targets_dropdown = QComboBox()
-    self.tab2.targets_dropdown.addItems(self.tab2.target_names)
 
     # Widgets
-    self.tab2.label_info = ScrollLabel(self)
-    self.tab2.label_info.setGeometry(200, 200, 200, 30)
-    self.tab2.label_info.label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+    self.tab2.file_upload_button = QPushButton("Upload TargetMasterSheet.csv file")
+    self.tab2.file_upload_button.clicked.connect(lambda: open_file_dialog(self))
+
+    self.tab2.targets_dropdown = QComboBox()
+    self.tab2.targets_dropdown.addItems(self.tab2.target_names)
 
     self.tab2.targets_dropdown_button = QPushButton("Go")
     self.tab2.targets_dropdown_button.clicked.connect(lambda: printers.get_info_of_obj(self, self.tab2))
@@ -250,7 +253,11 @@ def init_tab_two(self):
     self.tab2.sort_dropdown_button = QPushButton("Sort")
     self.tab2.sort_dropdown_button.clicked.connect(lambda: sorters.sort_targets_tab2(self))
 
-    self.tab2.plot_button = QPushButton("Plot")
+    self.tab2.label_info = ScrollLabel(self)
+    self.tab2.label_info.setGeometry(200, 200, 200, 30)
+    self.tab2.label_info.label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+
+    self.tab2.plot_button = QPushButton("Plot finder image")
     self.tab2.plot_button.clicked.connect(lambda: plotters.plot_coords(self, self.tab2))
 
     self.tab2.plot_airmass_button = QPushButton("Plot airmass")
@@ -265,24 +272,21 @@ def init_tab_two(self):
     self.tab2.show_up_button = QPushButton("Only Show Up Targets Toggle")
     self.tab2.show_up_button.clicked.connect(lambda: helpers.change_only_show_up(self, self.tab2))
 
-    self.tab2.file_upload_button = QPushButton("Upload TargetMasterSheet.csv file")
-    self.tab2.file_upload_button.clicked.connect(lambda: open_file_dialog(self))
-
-
     # Entire tab layout
-    self.tab2.layout = QVBoxLayout()
-    self.tab2.layout.addWidget(self.tab2.file_upload_button)
-    self.tab2.layout.addWidget(self.tab2.targets_dropdown)
-    self.tab2.layout.addWidget(self.tab2.targets_dropdown_button)
-    self.tab2.layout.addWidget(self.tab2.csv_info_button)
-    self.tab2.layout.addWidget(self.tab2.sort_dropdown)
-    self.tab2.layout.addWidget(self.tab2.sort_dropdown_button)
-    self.tab2.layout.addWidget(self.tab2.label_info)
-    self.tab2.layout.addWidget(self.tab2.plot_button)
-    self.tab2.layout.addWidget(self.tab2.plot_airmass_button)
-    self.tab2.layout.addWidget(self.tab2.plot_alt_button)
-    self.tab2.layout.addWidget(self.tab2.update_button)
-    self.tab2.layout.addWidget(self.tab2.show_up_button)
+    self.tab2.layout = QGridLayout()
+
+    self.tab2.layout.addWidget(self.tab2.file_upload_button, 0, 0, 1, 2)
+    self.tab2.layout.addWidget(self.tab2.targets_dropdown, 1, 0)
+    self.tab2.layout.addWidget(self.tab2.targets_dropdown_button, 1, 1)
+    self.tab2.layout.addWidget(self.tab2.csv_info_button, 2, 0, 1, 2)
+    self.tab2.layout.addWidget(self.tab2.sort_dropdown, 3, 0)
+    self.tab2.layout.addWidget(self.tab2.sort_dropdown_button, 3, 1)
+    self.tab2.layout.addWidget(self.tab2.label_info, 4, 0, 1, 2)
+    self.tab2.layout.addWidget(self.tab2.plot_button, 5, 0, 1, 2)
+    self.tab2.layout.addWidget(self.tab2.plot_airmass_button, 6, 0)
+    self.tab2.layout.addWidget(self.tab2.plot_alt_button, 6, 1)
+    self.tab2.layout.addWidget(self.tab2.update_button, 7, 0, 1, 2)
+    self.tab2.layout.addWidget(self.tab2.show_up_button, 8, 0, 1, 2)
 
     self.tab2.setLayout(self.tab2.layout)
 
@@ -299,47 +303,55 @@ def init_tab_three(self):
 
     # Widgets
     self.tab3.fov_input = QLineEdit()
+    self.tab3.fov_input.setFixedWidth(300)
     self.tab3.fov_input_button = QPushButton("Change FOV in arcminutes")
+    self.tab3.fov_input_button.setFixedWidth(300)
+    self.tab3.fov_input_button.clicked.connect(lambda: setters.change_fov(self))
+
+    self.tab3.ra_input = QLineEdit()
+    self.tab3.ra_input.setFixedWidth(300)
+    self.tab3.ra_input_button = QPushButton("Change Right Ascension")
+    self.tab3.ra_input_button.setFixedWidth(300)
+    self.tab3.ra_input_button.clicked.connect(lambda: setters.change_ra(self))
+
+    self.tab3.dec_input = QLineEdit()
+    self.tab3.dec_input.setFixedWidth(300)
+    self.tab3.dec_input_button = QPushButton("Change Declination")
+    self.tab3.dec_input_button.setFixedWidth(300)
+    self.tab3.dec_input_button.clicked.connect(lambda: setters.change_dec(self))
 
     self.tab3.label_info = QLabel()
     self.tab3.label_info.setGeometry(200, 200, 200, 30)
     self.tab3.label_info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
-    self.tab3.fov_input_button.clicked.connect(lambda: setters.change_fov(self))
-
-    self.tab3.ra_input = QLineEdit()
-    self.tab3.ra_input_button = QPushButton("Change Right Ascension")
-    self.tab3.ra_input_button.clicked.connect(lambda: setters.change_ra(self))
-
-    self.tab3.dec_input = QLineEdit()
-    self.tab3.dec_input_button = QPushButton("Change Declination")
-    self.tab3.dec_input_button.clicked.connect(lambda: setters.change_dec(self))
-
-    self.tab3.plot_button = QPushButton("Plot")
+    self.tab3.plot_button = QPushButton("Plot finder image")
     self.tab3.plot_button.clicked.connect(lambda: plotters.plot_coords(self, self.tab3))
 
     self.tab3.plot_airmass_button = QPushButton("Plot airmass")
+    self.tab3.plot_airmass_button.setFixedWidth(300)
     self.tab3.plot_airmass_button.clicked.connect(lambda: plotters.airmass_plot(self, self.tab3))
 
     self.tab3.plot_alt_button = QPushButton("Plot altitude")
+    self.tab3.plot_alt_button.setFixedWidth(300)
     self.tab3.plot_alt_button.clicked.connect(lambda: plotters.alt_time_plot(self, self.tab3))
 
     self.tab3.get_info_button = QPushButton("Print info")
     self.tab3.get_info_button.clicked.connect(lambda: printers.tab3_print(self, self.tab3))
 
     # Entire tab layout
-    self.tab3.layout = QVBoxLayout()
-    self.tab3.layout.addWidget(self.tab3.fov_input)
-    self.tab3.layout.addWidget(self.tab3.fov_input_button)
-    self.tab3.layout.addWidget(self.tab3.ra_input)
-    self.tab3.layout.addWidget(self.tab3.ra_input_button)
-    self.tab3.layout.addWidget(self.tab3.dec_input)
-    self.tab3.layout.addWidget(self.tab3.dec_input_button)
-    self.tab3.layout.addWidget(self.tab3.plot_button)
-    self.tab3.layout.addWidget(self.tab3.plot_airmass_button)
-    self.tab3.layout.addWidget(self.tab3.plot_alt_button)
-    self.tab3.layout.addWidget(self.tab3.get_info_button)
-    self.tab3.layout.addWidget(self.tab3.label_info)
+    self.tab3.layout = QGridLayout()
+
+    self.tab3.layout.addWidget(self.tab3.fov_input, 0, 0)
+    self.tab3.layout.addWidget(self.tab3.fov_input_button, 0, 1)
+    self.tab3.layout.addWidget(self.tab3.ra_input, 1, 0)
+    self.tab3.layout.addWidget(self.tab3.ra_input_button, 1, 1)
+    self.tab3.layout.addWidget(self.tab3.dec_input, 2, 0)
+    self.tab3.layout.addWidget(self.tab3.dec_input_button, 2, 1)
+    self.tab3.layout.addWidget(self.tab3.label_info, 3, 0, 1, 2)
+    self.tab3.layout.addWidget(self.tab3.plot_button, 4, 0, 1, 2)
+    self.tab3.layout.addWidget(self.tab3.plot_airmass_button, 5, 0)
+    self.tab3.layout.addWidget(self.tab3.plot_alt_button, 5, 1)
+    self.tab3.layout.addWidget(self.tab3.get_info_button, 6, 0, 1, 2)
 
     self.tab3.setLayout(self.tab3.layout)
 
@@ -395,6 +407,14 @@ def init_tab_four(self):
     self.tab4.obs_height_input_button = QPushButton("Change observer height (meters)")
     self.tab4.obs_height_input_button.clicked.connect(lambda: setters.change_height(self))
 
+    self.tab4.obs_alt_limit_upper_input = QLineEdit()
+    self.tab4.obs_alt_limit_upper_input_button = QPushButton("Change upper altitude limit")
+    self.tab4.obs_alt_limit_upper_input_button.clicked.connect(lambda: setters.change_upper_alt_lim(self))
+
+    self.tab4.obs_alt_limit_lower_input = QLineEdit()
+    self.tab4.obs_alt_limit_lower_input_button = QPushButton("Change lower altitude limit")
+    self.tab4.obs_alt_limit_lower_input_button.clicked.connect(lambda: setters.change_lower_alt_lim(self))
+
     self.tab4.obs_timezone_dropdown = QComboBox()
     self.tab4.obs_timezone_dropdown.setEditable(True)
     self.tab4.obs_timezone_dropdown.addItems(self.tab4.timezones)
@@ -418,25 +438,29 @@ def init_tab_four(self):
     self.tab4.obs_list_dropdown_button.clicked.connect(lambda: setters.set_observatory(self))
 
     # Entire tab layout
-    self.tab4.layout = QVBoxLayout()
+    self.tab4.layout = QGridLayout()
 
-    self.tab4.layout.addWidget(self.tab4.time_input)
-    self.tab4.layout.addWidget(self.tab4.time_input_button)
-    self.tab4.layout.addWidget(self.tab4.now_button)
-    self.tab4.layout.addWidget(self.tab4.obs_lat_input)
-    self.tab4.layout.addWidget(self.tab4.obs_lat_input_button)
-    self.tab4.layout.addWidget(self.tab4.obs_lon_input)
-    self.tab4.layout.addWidget(self.tab4.obs_lon_input_button)
-    self.tab4.layout.addWidget(self.tab4.obs_height_input)
-    self.tab4.layout.addWidget(self.tab4.obs_height_input_button)
-    self.tab4.layout.addWidget(self.tab4.obs_timezone_dropdown)
-    self.tab4.layout.addWidget(self.tab4.obs_timezone_dropdown_button)
-    self.tab4.layout.addWidget(self.tab4.obs_name_input)
-    self.tab4.layout.addWidget(self.tab4.obs_name_input_button)
-    self.tab4.layout.addWidget(self.tab4.obs_reset_input_button)
-    self.tab4.layout.addWidget(self.tab4.obs_list_dropdown)
-    self.tab4.layout.addWidget(self.tab4.obs_list_dropdown_button)
-    self.tab4.layout.addWidget(self.tab4.label_info)
+    self.tab4.layout.addWidget(self.tab4.time_input, 0, 0)
+    self.tab4.layout.addWidget(self.tab4.time_input_button, 0, 1)
+    self.tab4.layout.addWidget(self.tab4.now_button, 1, 0, 1, 2)
+    self.tab4.layout.addWidget(self.tab4.obs_lat_input, 3, 0)
+    self.tab4.layout.addWidget(self.tab4.obs_lat_input_button, 3, 1)
+    self.tab4.layout.addWidget(self.tab4.obs_lon_input, 4, 0)
+    self.tab4.layout.addWidget(self.tab4.obs_lon_input_button, 4, 1)
+    self.tab4.layout.addWidget(self.tab4.obs_height_input, 5, 0)
+    self.tab4.layout.addWidget(self.tab4.obs_height_input_button, 5, 1)
+    self.tab4.layout.addWidget(self.tab4.obs_alt_limit_upper_input, 7, 0)
+    self.tab4.layout.addWidget(self.tab4.obs_alt_limit_upper_input_button, 7, 1)
+    self.tab4.layout.addWidget(self.tab4.obs_alt_limit_lower_input, 8, 0)
+    self.tab4.layout.addWidget(self.tab4.obs_alt_limit_lower_input_button, 8, 1)
+    self.tab4.layout.addWidget(self.tab4.obs_timezone_dropdown, 10, 0)
+    self.tab4.layout.addWidget(self.tab4.obs_timezone_dropdown_button, 10, 1)
+    self.tab4.layout.addWidget(self.tab4.obs_name_input, 12, 0)
+    self.tab4.layout.addWidget(self.tab4.obs_name_input_button, 12, 1)
+    self.tab4.layout.addWidget(self.tab4.obs_list_dropdown, 14, 0)
+    self.tab4.layout.addWidget(self.tab4.obs_list_dropdown_button, 14, 1)
+    self.tab4.layout.addWidget(self.tab4.obs_reset_input_button, 15, 0, 1, 2)
+    self.tab4.layout.addWidget(self.tab4.label_info, 16, 0, 1, 2)
 
     self.tab4.setLayout(self.tab4.layout)
 
